@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}not found | {{ bot_name }}{% endblock %}
+{% block description %}this page does not exist.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">404</p>
+  <h1>no meows here</h1>
+  <p class="lede">this page went looking for meows and got lost.</p>
+  <a class="button primary" href="{{ url_for('index') }}">back home</a>
+</section>
+{% endblock %}

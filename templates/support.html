@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}support | {{ bot_name }}{% endblock %}
+{% block description %}get help with meow bot.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">support</p>
+  <h1>need a hand?</h1>
+  <p class="lede">bugs, questions, or data requests.</p>
+</section>
+
+<section class="section split">
+  <div>
+    <h2>open an issue</h2>
+    <p>the fastest way to report a bug or ask a question is the github issue tracker. include what happened and what you expected.</p>
+    <a class="button" href="{{ github_issues_url }}">open an issue</a>
+  </div>
+  <div class="note-card">
+    <h2>support link</h2>
+    {% if support_url %}
+    <p>you can also use the support link below.</p>
+    <a class="button" href="{{ support_url }}">open support</a>
+    {% else %}
+    <p>a support server link is not set up yet. use the github issue tracker for now.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
