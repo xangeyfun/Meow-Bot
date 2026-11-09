@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="meow bot">
   <rect width="1200" height="630" fill="#f6f1e7"/>
   <rect x="40" y="40" width="1120" height="550" fill="none" stroke="#1c1a17" stroke-width="4"/>
-  <g fill="none" stroke="#1c1a17" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(90 150) scale(2.2)">
-    <path d="M30 50 24 24l24 12"/>
-    <path d="M90 50l6-26-24 12"/>
-    <path d="M30 50c0 30 14 44 30 44s30-14 30-44"/>
-    <path d="M50 58h.1M70 58h.1" stroke-width="7"/>
-    <path d="M60 68v6"/>
-    <path d="M60 74c-4 5-9 5-12 1M60 74c4 5 9 5 12 1"/>
-    <path d="M30 66H16M30 74l-13 5M90 66h14M90 74l13 5"/>
-  </g>
-  <text x="420" y="300" font-family="monospace" font-size="96" font-weight="700" fill="#1c1a17">meow bot</text>
-  <text x="424" y="370" font-family="monospace" font-size="34" fill="#6b6258">a small discord bot that says meow.</text>
-  <text x="424" y="440" font-family="monospace" font-size="28" fill="#e85d2a">say meow. receive meow.</text>
-  <text x="90" y="550" font-family="monospace" font-size="24" fill="#6b6258">github.com/xangeyfun/Meow-Bot</text>
+  <defs>
+    <clipPath id="pfp-clip">
+      <rect x="96" y="158" width="288" height="288" rx="48"/>
+    </clipPath>
+  </defs>
+  <image href="pfp.jpg" x="96" y="158" width="288" height="288" preserveAspectRatio="xMidYMid slice" clip-path="url(#pfp-clip)"/>
+  <rect x="96" y="158" width="288" height="288" rx="48" fill="none" stroke="#1c1a17" stroke-width="4"/>
+  <text x="430" y="285" font-family="monospace" font-size="104" font-weight="700" fill="#1c1a17">meow bot</text>
+  <text x="434" y="355" font-family="monospace" font-size="34" fill="#6b6258">a discord bot that says meow.</text>
+  <text x="434" y="430" font-family="monospace" font-size="30" fill="#e85d2a">say meow. receive meow.</text>
+  <rect x="432" y="474" width="250" height="44" fill="#e85d2a" stroke="#1c1a17" stroke-width="3"/>
+  <text x="452" y="504" font-family="monospace" font-size="22" font-weight="700" fill="#fff8ef">certified meower</text>
+  <text x="96" y="548" font-family="monospace" font-size="24" fill="#6b6258">github.com/xangeyfun/Meow-Bot</text>
 </svg>
