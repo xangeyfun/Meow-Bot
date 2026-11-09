@@ -4,21 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ bot_name }}{% endblock %}</title>
-  <meta name="description" content="{% block description %}a small discord bot that says meow.{% endblock %}">
+  <meta name="description" content="{% block description %}a discord bot that says meow.{% endblock %}">
   <link rel="canonical" href="{{ site_url }}{{ request.path }}">
   <meta property="og:title" content="{% block og_title %}{{ bot_name }}{% endblock %}">
-  <meta property="og:description" content="{% block og_description %}a small discord bot that says meow.{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}a discord bot that says meow.{% endblock %}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ site_url }}{{ request.path }}">
   <meta property="og:image" content="{{ site_url }}/static/img/og.svg">
   <meta name="theme-color" content="#E85D2A">
-  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+  <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='img/pfp.jpg') }}">
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <header class="site-header">
     <a class="brand" href="{{ url_for('index') }}" aria-label="{{ bot_name }} home">
-      <img src="{{ url_for('static', filename='img/cat.svg') }}" alt="" width="28" height="28">
+      <img src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="" width="32" height="32">
       <span>{{ bot_name }}</span>
     </a>
     <nav class="site-nav" aria-label="main">
@@ -26,6 +27,15 @@
       <a href="{{ url_for('stats_page') }}" {% if page == 'stats' %}aria-current="page"{% endif %}>stats</a>
       <a href="{{ url_for('status_page') }}" {% if page == 'status' %}aria-current="page"{% endif %}>status</a>
       <a href="{{ url_for('info_page') }}" {% if page == 'info' %}aria-current="page"{% endif %}>info</a>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="switch to dark mode" title="switch theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"></path>
+        </svg>
+      </button>
       <a class="nav-invite" href="{{ invite_url }}">add to discord</a>
     </nav>
   </header>
@@ -36,8 +46,8 @@
 
   <footer class="site-footer">
     <div class="footer-left">
-      <img src="{{ url_for('static', filename='img/cat.svg') }}" alt="" width="20" height="20">
-      <span>{{ bot_name }} v{{ version }}</span>
+      <img src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="" width="22" height="22">
+      <span>{{ bot_name }}</span>
     </div>
     <nav class="footer-nav" aria-label="footer">
       <a href="{{ url_for('privacy_page') }}">privacy</a>
@@ -45,7 +55,6 @@
       <a href="{{ url_for('support_page') }}">support</a>
       <a href="{{ github_url }}">github</a>
     </nav>
-    <p class="footer-note">built by xangey. no ads, no nonsense, just meows.</p>
   </footer>
 
   <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
