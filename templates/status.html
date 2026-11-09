@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}status | {{ bot_name }}{% endblock %}
+{% block description %}check if meow bot is online.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">status</p>
+  <h1>{% if stats.online %}online{% else %}offline{% endif %}</h1>
+  <p class="lede">{% if stats.online %}meow bot is connected and meowing.{% else %}meow bot is not responding right now. it may be restarting.{% endif %}</p>
+</section>
+
+<section class="status-panel">
+  <div class="status-row"><span>bot</span><span class="badge {% if stats.online %}on{% endif %}">{% if stats.online %}online{% else %}offline{% endif %}</span></div>
+  <div class="status-row"><span>uptime</span><span>{{ stats.uptime }}</span></div>
+  <div class="status-row"><span>last heartbeat</span><span>{{ stats.last_heartbeat|timestamp }}</span></div>
+  <div class="status-row"><span>servers</span><span>{{ "{:,}".format(stats.total_guilds) }}</span></div>
+  <div class="status-row"><span>meowers</span><span>{{ "{:,}".format(stats.total_users) }}</span></div>
+  <div class="status-row"><span>total meows</span><span>{{ "{:,}".format(stats.total_meows) }}</span></div>
+</section>
+
+<p class="muted">a heartbeat older than 90 seconds counts as offline.</p>
+{% endblock %}
