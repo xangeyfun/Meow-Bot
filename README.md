@@ -1,8 +1,8 @@
 # meow bot
 
-a small discord bot that says meow.
+a discord bot that says meow.
 
-it watches chat for meow like messages and replies with a random meow. server admins can add custom regex triggers, toggle built in triggers, and turn the bot off per server. it also counts successful replies and shows live stats on a small Flask website.
+it watches chat for meow like messages and replies with a random meow. server admins can add custom regex triggers, toggle built in triggers, and turn the bot off per server. it also counts successful replies and shows live stats on a Flask website.
 
 ## features
 
@@ -12,7 +12,9 @@ it watches chat for meow like messages and replies with a random meow. server ad
 - up to 25 custom regex triggers per server, tested before saving
 - per channel rate limit of 5 replies per 5 seconds
 - server leaderboards and global meow totals
+- commands reply in chat by default, with an optional `hidden` flag
 - Flask website with landing, commands, stats, status, info, privacy, terms, and support pages
+- light and dark website themes with a saved preference
 - shared SQLite database between the bot and website
 
 ## requirements
@@ -72,10 +74,11 @@ it watches chat for meow like messages and replies with a random meow. server ad
 | `/config` | open the server settings panel. requires manage server |
 | `/ping` | check latency |
 | `/github` | get the source link |
-| `/version` | show the bot version |
 | `/stats [user]` | meow count for a user |
 | `/leaderboard` | top meowers in the server |
 | `/totalmeows` | total meows across all servers |
+
+every command accepts `hidden:true` to show the reply only to the person who ran it. replies are public by default.
 
 ## custom regex safety
 
@@ -104,6 +107,10 @@ pages:
 .venv/bin/python -m ruff check .
 ```
 
+## contributing
+
+bug reports and small pull requests are welcome. see [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) for setup, checks, and the security policy.
+
 ## project layout
 
 ```text
@@ -115,8 +122,9 @@ store.py            per server settings and cache
 stats.py            in memory counters and database queries
 schema.py           SQLite schema
 templates/          website templates
-static/             website CSS, JS, and SVG assets
+static/             website CSS, JS, SVG assets, and screenshots
 tests/              unit and website tests
+.github/            issue templates, pull request template, and CI
 ```
 
 ## license
