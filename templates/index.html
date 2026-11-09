@@ -1,31 +1,31 @@
 {% extends "base.html" %}
-{% block title %}{{ bot_name }} | a small discord bot that says meow{% endblock %}
+{% block title %}{{ bot_name }} | a discord bot that says meow{% endblock %}
 {% block description %}meow bot watches chat for meows and meows back. it also keeps score.{% endblock %}
-{% block og_title %}{{ bot_name }} | a small discord bot that says meow{% endblock %}
+{% block og_title %}{{ bot_name }} | a discord bot that says meow{% endblock %}
 {% block og_description %}meow bot watches chat for meows and meows back. it also keeps score.{% endblock %}
 {% block content %}
 <section class="hero">
   <div class="hero-copy">
-    <p class="eyebrow">a small discord bot</p>
     <h1>it says meow.</h1>
     <p class="lede">meow bot watches chat for meows, mreows, mews, and other cat noises. when it sees one, it meows back. that is the whole idea.</p>
     <div class="actions">
       <a class="button primary" href="{{ invite_url }}">add meow bot</a>
       <button class="button" type="button" data-copy="{{ invite_url }}">copy invite link</button>
       <a class="button" href="{{ url_for('commands_page') }}">see commands</a>
+      <button class="button" type="button" data-meow>ask the cat</button>
     </div>
   </div>
   <div class="hero-art">
-    <img src="{{ url_for('static', filename='img/cat.svg') }}" alt="a simple line drawing of a cat" width="220" height="220">
-    <p class="art-note">meow.</p>
+    <span class="stamp">certified meower</span>
+    <img data-meow-art src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="meow bot's profile picture" width="220" height="220" tabindex="0" role="button" aria-label="ask the cat to meow">
+    <p class="art-note" data-meow-output aria-live="polite">meow.</p>
   </div>
 </section>
 
 <section class="stats-strip" aria-label="live stats">
-  <div><span class="stat-number">{{ "{:,}".format(stats.total_meows) }}</span><span class="stat-label">meows</span></div>
-  <div><span class="stat-number">{{ "{:,}".format(stats.total_guilds) }}</span><span class="stat-label">servers</span></div>
-  <div><span class="stat-number">{{ "{:,}".format(stats.total_users) }}</span><span class="stat-label">meowers</span></div>
-  <div><span class="status-dot {% if stats.online %}online{% endif %}"></span><span class="stat-label">{% if stats.online %}online{% else %}offline{% endif %}</span></div>
+  <div><span class="stat-number" data-stat="total_meows">{{ "{:,}".format(stats.total_meows) }}</span><span class="stat-label">meows</span></div>
+  <div><span class="stat-number" data-stat="total_guilds">{{ "{:,}".format(stats.total_guilds) }}</span><span class="stat-label">servers</span></div>
+  <div><span class="stat-number" data-stat="total_users">{{ "{:,}".format(stats.total_users) }}</span><span class="stat-label">meowers</span></div>
 </section>
 
 <section class="section">
@@ -35,6 +35,16 @@
     <li><span class="step-number">2</span><div><h3>say meow</h3><p>type meow, mreow, mew, mrow, mrrp, nya, or purr. the bot will notice.</p></div></li>
     <li><span class="step-number">3</span><div><h3>receive meow</h3><p>it replies with a meow. it also counts the meow, because someone has to keep score.</p></div></li>
   </ol>
+</section>
+
+<section class="section showcase">
+  <h2>in the wild</h2>
+  <figure class="shot-card">
+    <div class="shot-frame">
+      <img class="shot-light" src="{{ url_for('static', filename='img/screenshot-light.png') }}" alt="meow bot replying to a meow in Discord light mode" loading="lazy">
+      <img class="shot-dark" src="{{ url_for('static', filename='img/screenshot-dark.png') }}" alt="meow bot replying to a meow in Discord dark mode" loading="lazy">
+    </div>
+  </figure>
 </section>
 
 <section class="section split">
