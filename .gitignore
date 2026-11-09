@@ -1,0 +1,13 @@
+.env
+database.db
+database.db-wal
+database.db-shm
+.venv
+venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+instance/
