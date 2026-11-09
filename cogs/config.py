@@ -412,21 +412,24 @@ class ConfigCog(commands.Cog):
         )
 
     @app_commands.command(name="config", description="open server settings")
+    @app_commands.describe(hidden="only show the panel to you")
     @app_commands.default_permissions(manage_guild=True)
     @app_commands.checks.has_permissions(manage_guild=True)
     @app_commands.allowed_installs(guilds=True, users=False)
     @app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
-    async def config(self, interaction: discord.Interaction):
+    async def config(
+        self, interaction: discord.Interaction, hidden: bool = False
+    ):
         if interaction.guild is None:
             await interaction.response.send_message(
-                "Use this in a server.", ephemeral=True
+                "Use this in a server.", ephemeral=hidden
             )
             return
         view = ConfigView(self, interaction.guild.id, interaction.user.id)
         await interaction.response.send_message(
             embed=self.build_embed(interaction.guild.id),
             view=view,
-            ephemeral=True,
+            ephemeral=hidden,
         )
 
 
