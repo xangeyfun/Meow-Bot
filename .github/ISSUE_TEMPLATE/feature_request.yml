@@ -1,0 +1,48 @@
+name: Feature request
+description: Suggest an idea for meow bot.
+title: "[feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep it small and cat themed. Tell us what you want and why it would help.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      placeholder: It is hard to...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: What should happen?
+      placeholder: Add a command that...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      placeholder: I also thought about...
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - bot commands
+        - reactions / triggers
+        - server settings
+        - website
+        - database / stats
+        - other
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
