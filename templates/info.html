@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}info | {{ bot_name }}{% endblock %}
+{% block description %}privacy, terms, support, and other details for meow bot.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">info</p>
+  <h1>the small print</h1>
+  <p class="lede">everything else you might want to know.</p>
+</section>
+
+<section class="card-grid">
+  <a class="card" href="{{ url_for('privacy_page') }}"><h2>privacy</h2><p>what the bot stores and what it does not.</p><span class="card-link">read privacy</span></a>
+  <a class="card" href="{{ url_for('terms_page') }}"><h2>terms</h2><p>the short version of the rules.</p><span class="card-link">read terms</span></a>
+  <a class="card" href="{{ url_for('support_page') }}"><h2>support</h2><p>get help or report a problem.</p><span class="card-link">get support</span></a>
+  <a class="card" href="{{ github_url }}"><h2>github</h2><p>the source code, issues, and commits.</p><span class="card-link">open github</span></a>
+  <a class="card" href="{{ url_for('status_page') }}"><h2>status</h2><p>check if the bot is online.</p><span class="card-link">check status</span></a>
+  <a class="card" href="{{ invite_url }}"><h2>invite</h2><p>add meow bot to your server.</p><span class="card-link">add to discord</span></a>
+</section>
+
+<section class="section">
+  <h2>about</h2>
+  <p>meow bot is a small discord bot built by xangey. it replies to cat noises, keeps a count, and lets server admins add custom regex triggers. it does not do much else.</p>
+</section>
+{% endblock %}
