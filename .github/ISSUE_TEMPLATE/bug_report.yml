@@ -1,0 +1,61 @@
+name: Bug report
+description: Report something that is broken.
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping make meow bot better. Please do not include your bot token, webhook URLs, or other secrets.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Tell us what went wrong and what you expected instead.
+      placeholder: The bot replied with the wrong sound when I typed...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we make this happen again?
+      placeholder: |
+        1. Run /config
+        2. Add a trigger named...
+        3. Say...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - bot commands
+        - reactions / triggers
+        - server settings
+        - website
+        - database / stats
+        - other
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.11"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste any errors or tracebacks. Remove secrets first.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: I removed tokens, webhook URLs, and other secrets from this report.
+          required: true
