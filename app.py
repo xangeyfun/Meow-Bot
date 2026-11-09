@@ -6,10 +6,9 @@ import time
 from datetime import datetime, timezone
 
 from dotenv import load_dotenv
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, jsonify, redirect, render_template, url_for
 
 import stats
-from __version__ import __version__
 from logconf import setup_logging
 from matcher import BUILTIN_TRIGGERS
 
@@ -36,7 +35,6 @@ COMMANDS = (
     ("/stats [user]", "meow count for a user", "everyone"),
     ("/leaderboard", "top meowers in this server", "everyone"),
     ("/totalmeows", "total meows across all servers", "everyone"),
-    ("/version", "show the bot version", "everyone"),
     ("/github", "get the source link", "everyone"),
     ("/config", "open server settings", "manage server"),
 )
@@ -60,7 +58,18 @@ def _empty_stats():
         "online": False,
         "uptime_seconds": 0,
         "uptime": "0s",
+        "meows_per_guild": 0,
+        "meows_per_user": 0,
     }
+
+
+def _with_derived_stats(data):
+    total = data.get("total_meows") or 0
+    guilds = data.get("total_guilds") or 0
+    users = data.get("total_users") or 0
+    data["meows_per_guild"] = round(total / guilds, 1) if guilds else 0
+    data["meows_per_user"] = round(total / users, 1) if users else 0
+    return data
 
 
 def get_site_stats():
@@ -80,6 +89,7 @@ def get_site_stats():
         data = _empty_stats()
 
     data["uptime"] = stats.format_uptime(data.get("uptime_seconds", 0))
+    _with_derived_stats(data)
 
     with _stats_lock:
         _stats_cache["value"] = data
@@ -105,7 +115,6 @@ def inject_site():
         "support_url": SUPPORT_URL,
         "site_url": SITE_URL,
         "invite_url": INVITE_URL,
-        "version": __version__,
         "current_year": datetime.now(timezone.utc).year,
     }
 
@@ -150,6 +159,18 @@ def stats_page():
     return render_template("stats.html", page="stats", stats=get_site_stats())
 
 
+@app.get("/api/stats")
+def stats_api():
+    data = get_site_stats()
+    return jsonify(
+        {
+            "total_meows": data["total_meows"],
+            "total_guilds": data["total_guilds"],
+            "total_users": data["total_users"],
+        }
+    )
+
+
 @app.get("/status")
 def status_page():
     return render_template("status.html", page="status", stats=get_site_stats())
@@ -182,7 +203,7 @@ def invite():
 
 @app.get("/favicon.ico")
 def favicon():
-    return redirect(url_for("static", filename="img/favicon.svg"), code=302)
+    return redirect(url_for("static", filename="img/pfp.jpg"), code=302)
 
 
 @app.errorhandler(404)
