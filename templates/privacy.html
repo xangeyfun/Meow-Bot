@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}privacy | {{ bot_name }}{% endblock %}
+{% block description %}what meow bot stores and what it does not.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">privacy</p>
+  <h1>what it stores</h1>
+  <p class="lede">the short version: ids and counts, not message content.</p>
+</section>
+
+<section class="prose">
+  <h2>what meow bot stores</h2>
+  <ul>
+    <li>server ids and user ids, so it can count meows per server and per user.</li>
+    <li>meow counts and the time of the last meow.</li>
+    <li>server settings, including custom regex patterns and which triggers are on or off.</li>
+    <li>a heartbeat timestamp and basic bot totals for the status page.</li>
+  </ul>
+
+  <h2>what it does not store</h2>
+  <ul>
+    <li>message content. messages are checked in memory and then discarded.</li>
+    <li>usernames, avatars, email addresses, or payment information.</li>
+    <li>analytics, advertising identifiers, or tracking data.</li>
+  </ul>
+
+  <h2>who can see it</h2>
+  <p>anyone can see server stats with the bot commands. server admins can see and change server settings. the website shows only aggregate totals. the database is not public.</p>
+
+  <h2>removing data</h2>
+  <p>server admins can turn the bot off or remove custom triggers at any time. to request deletion of a server's stats, use the support page.</p>
+
+  <p class="muted">last updated: {{ current_year }}.</p>
+</section>
+{% endblock %}
