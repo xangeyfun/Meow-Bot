@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}stats | {{ bot_name }}{% endblock %}
+{% block description %}live meow counts for meow bot.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">stats</p>
+  <h1>the meow count</h1>
+  <p class="lede">live numbers from the bot. cached for a short while.</p>
+</section>
+
+<section class="stat-grid">
+  <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_meows) }}</span><span class="stat-label">total meows</span></div>
+  <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_guilds) }}</span><span class="stat-label">servers</span></div>
+  <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_users) }}</span><span class="stat-label">meowers</span></div>
+  <div class="stat-card"><span class="stat-number">{{ stats.uptime }}</span><span class="stat-label">uptime</span></div>
+</section>
+
+<section class="section">
+  <p class="muted">last heartbeat: {{ stats.last_heartbeat|timestamp }}. status: {% if stats.online %}online{% else %}offline{% endif %}.</p>
+  <p class="muted">the bot counts a meow when it successfully replies. messages dropped by the rate limit are not counted.</p>
+</section>
+{% endblock %}
