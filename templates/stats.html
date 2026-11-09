@@ -1,22 +1,32 @@
 {% extends "base.html" %}
 {% block title %}stats | {{ bot_name }}{% endblock %}
-{% block description %}live meow counts for meow bot.{% endblock %}
+{% block description %}live meow counts and averages for meow bot.{% endblock %}
 {% block content %}
 <section class="page-head">
   <p class="eyebrow">stats</p>
   <h1>the meow count</h1>
-  <p class="lede">live numbers from the bot. cached for a short while.</p>
+  <p class="lede">every reply is a point. here is how the scoreboard looks right now.</p>
 </section>
 
 <section class="stat-grid">
   <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_meows) }}</span><span class="stat-label">total meows</span></div>
   <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_guilds) }}</span><span class="stat-label">servers</span></div>
   <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_users) }}</span><span class="stat-label">meowers</span></div>
-  <div class="stat-card"><span class="stat-number">{{ stats.uptime }}</span><span class="stat-label">uptime</span></div>
+  <div class="stat-card"><span class="stat-number">{{ "{:,.1f}".format(stats.meows_per_user) }}</span><span class="stat-label">meows per meower</span></div>
 </section>
 
-<section class="section">
-  <p class="muted">last heartbeat: {{ stats.last_heartbeat|timestamp }}. status: {% if stats.online %}online{% else %}offline{% endif %}.</p>
-  <p class="muted">the bot counts a meow when it successfully replies. messages dropped by the rate limit are not counted.</p>
+<section class="section split">
+  <div>
+    <h2>the meow math</h2>
+    <div class="status-panel">
+      <div class="status-row"><span>meows per server</span><span>{{ "{:,.1f}".format(stats.meows_per_guild) }}</span></div>
+      <div class="status-row"><span>last heartbeat</span><span>{{ stats.last_heartbeat|timestamp }}</span></div>
+    </div>
+  </div>
+  <div class="note-card">
+    <h3>how counting works</h3>
+    <p>the bot counts a meow when it successfully replies. messages dropped by the rate limit are not counted.</p>
+    <p>only totals are shown here. server and user ids stay in the database.</p>
+  </div>
 </section>
 {% endblock %}
