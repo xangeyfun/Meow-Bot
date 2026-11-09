@@ -9,6 +9,16 @@ def test_index(web_client):
     response = web_client.get("/")
     assert response.status_code == 200
     assert b"it says meow." in response.data
+    assert b'data-stat="total_meows"' in response.data
+    assert b"online" not in response.data
+
+
+def test_stats_api(web_client):
+    response = web_client.get("/api/stats")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert set(data) == {"total_meows", "total_guilds", "total_users"}
+    assert all(isinstance(value, int) for value in data.values())
 
 
 def test_commands(web_client):
@@ -16,6 +26,22 @@ def test_commands(web_client):
     assert response.status_code == 200
     assert b"/config" in response.data
     assert b"built in triggers" in response.data
+    assert b"/version" not in response.data
+    assert b"hidden" in response.data
+
+
+def test_theme_toggle(web_client):
+    response = web_client.get("/")
+    assert response.status_code == 200
+    assert b"data-theme-toggle" in response.data
+    assert b"js/theme.js" in response.data
+
+
+def test_screenshots(web_client):
+    for path in ["/static/img/screenshot-light.png", "/static/img/screenshot-dark.png"]:
+        response = web_client.get(path)
+        assert response.status_code == 200
+        assert response.mimetype == "image/png"
 
 
 def test_stats_page(web_client):
@@ -45,7 +71,7 @@ def test_invite_redirect(web_client):
 def test_favicon_redirect(web_client):
     response = web_client.get("/favicon.ico")
     assert response.status_code == 302
-    assert "/static/img/favicon.svg" in response.headers["Location"]
+    assert "/static/img/pfp.jpg" in response.headers["Location"]
 
 
 def test_404(web_client):
@@ -92,7 +118,8 @@ def test_website_without_database(monkeypatch, tmp_path):
         response = client.get("/stats")
 
     assert response.status_code == 200
-    assert b"offline" in response.data
+    assert b"total meows" in response.data
+    assert b"meows per server" in response.data
     assert not missing.exists()
 
 
@@ -100,8 +127,8 @@ def test_static_assets(web_client):
     for path in [
         "/static/css/style.css",
         "/static/js/main.js",
-        "/static/img/cat.svg",
-        "/static/img/favicon.svg",
+        "/static/js/theme.js",
+        "/static/img/pfp.jpg",
         "/static/img/og.svg",
     ]:
         response = web_client.get(path)
