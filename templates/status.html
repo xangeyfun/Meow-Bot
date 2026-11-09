@@ -4,18 +4,30 @@
 {% block content %}
 <section class="page-head">
   <p class="eyebrow">status</p>
-  <h1>{% if stats.online %}online{% else %}offline{% endif %}</h1>
+  <h1><span class="status-dot {% if stats.online %}online{% endif %}"></span>{% if stats.online %}online{% else %}offline{% endif %}</h1>
   <p class="lede">{% if stats.online %}meow bot is connected and meowing.{% else %}meow bot is not responding right now. it may be restarting.{% endif %}</p>
 </section>
 
 <section class="status-panel">
   <div class="status-row"><span>bot</span><span class="badge {% if stats.online %}on{% endif %}">{% if stats.online %}online{% else %}offline{% endif %}</span></div>
   <div class="status-row"><span>uptime</span><span>{{ stats.uptime }}</span></div>
+  <div class="status-row"><span>started</span><span>{{ stats.started_at|timestamp }}</span></div>
   <div class="status-row"><span>last heartbeat</span><span>{{ stats.last_heartbeat|timestamp }}</span></div>
-  <div class="status-row"><span>servers</span><span>{{ "{:,}".format(stats.total_guilds) }}</span></div>
-  <div class="status-row"><span>meowers</span><span>{{ "{:,}".format(stats.total_users) }}</span></div>
-  <div class="status-row"><span>total meows</span><span>{{ "{:,}".format(stats.total_meows) }}</span></div>
 </section>
 
-<p class="muted">a heartbeat older than 90 seconds counts as offline.</p>
+<section class="section split">
+  <div class="note-card">
+    <h3>what this means</h3>
+    <p>the bot writes a heartbeat every 30 seconds. if the newest heartbeat is older than 90 seconds, this page shows offline.</p>
+    <p>uptime is measured from the last time the bot started, and is only shown while it is online.</p>
+  </div>
+  <div>
+    <h2>bot acting up?</h2>
+    <p>try a quick restart or check the issue tracker. if something looks broken, a report helps a lot.</p>
+    <div class="actions">
+      <a class="button" href="{{ github_issues_url }}">open an issue</a>
+      <a class="button" href="{{ url_for('support_page') }}">get support</a>
+    </div>
+  </div>
+</section>
 {% endblock %}
