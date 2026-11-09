@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}commands | {{ bot_name }}{% endblock %}
+{% block description %}the slash commands and built in triggers for meow bot.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">commands</p>
+  <h1>what it can do</h1>
+  <p class="lede">slash commands. all of them work in servers.</p>
+</section>
+
+<section class="section">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>command</th><th>what it does</th><th>who</th></tr>
+      </thead>
+      <tbody>
+        {% for command, description, who in commands %}
+        <tr><td><code>{{ command }}</code></td><td>{{ description }}</td><td>{{ who }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section split">
+  <div>
+    <h2>built in triggers</h2>
+    <p>these are the sounds meow bot knows out of the box.</p>
+    <ul class="trigger-list">
+      {% for trigger in triggers %}
+      <li><span class="trigger-name">{{ trigger.label }}</span><span class="badge {% if trigger.default_enabled %}on{% endif %}">{% if trigger.default_enabled %}on{% else %}off{% endif %}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="note-card">
+    <h3>custom triggers</h3>
+    <p>admins can add up to 25 custom regex triggers per server. open <code>/config</code> to add, remove, or toggle them.</p>
+    <p>the bot tests each pattern against a set of awkward inputs before saving it.</p>
+  </div>
+</section>
+{% endblock %}
