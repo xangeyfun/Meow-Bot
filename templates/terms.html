@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}terms | {{ bot_name }}{% endblock %}
+{% block description %}the short terms for using meow bot.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">terms</p>
+  <h1>the rules</h1>
+  <p class="lede">short, boring, and mostly common sense.</p>
+</section>
+
+<section class="prose">
+  <h2>using meow bot</h2>
+  <p>use meow bot in line with discord's terms of service and community guidelines. do not use it to spam, harass, or break the law.</p>
+
+  <h2>server admins</h2>
+  <p>admins control the bot's settings for their server. they can turn it off, change triggers, or remove custom regex patterns. they are responsible for the patterns they add.</p>
+
+  <h2>availability</h2>
+  <p>meow bot is provided as is. it may go offline for maintenance, updates, or reasons outside our control. no uptime guarantee is promised.</p>
+
+  <h2>changes</h2>
+  <p>these terms may change as the bot changes. continued use after a change means you accept the new terms.</p>
+
+  <p class="muted">last updated: {{ current_year }}.</p>
+</section>
+{% endblock %}
