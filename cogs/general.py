@@ -14,7 +14,7 @@ INVITE_URL = os.getenv(
 HELP_TEXT = f"""meow bot
 
 say meow, mreow, mew, mrow, mrrp, nya, or purr. it will meow back.
-server admins can teach it new sounds with /config.
+server admins can teach it new sounds and replies with /config.
 
 commands
 /help: this message
