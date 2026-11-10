@@ -8,6 +8,9 @@ logger = logging.getLogger("matcher")
 
 MAX_PATTERN_LENGTH = 200
 MAX_CUSTOM_TRIGGERS = 25
+MAX_NAME_LENGTH = 32
+MAX_RESPONSE_LENGTH = 500
+MAX_SIMPLE_LENGTH = 32
 MATCH_TIMEOUT = 0.05
 VALIDATION_TIMEOUT = 0.1
 
@@ -92,6 +95,23 @@ def compile_custom(pattern):
     return compiled
 
 
+def build_simple_pattern(text):
+    text = (text or "").strip()
+    if not text:
+        raise RegexValidationError("Give the trigger something to match.")
+    if len(text) > MAX_SIMPLE_LENGTH:
+        raise RegexValidationError(
+            f"That trigger is too long. Keep it under {MAX_SIMPLE_LENGTH} characters."
+        )
+
+    escaped = regex.escape(text)
+    prefix = r"(?<!\w)" if text[0].isalnum() or text[0] == "_" else ""
+    suffix = r"(?!\w)" if text[-1].isalnum() or text[-1] == "_" else ""
+    pattern = f"{prefix}{escaped}{suffix}"
+    compile_custom(pattern)
+    return pattern
+
+
 def compile_stored(pattern):
     pattern = (pattern or "").strip()
     if not pattern or len(pattern) > MAX_PATTERN_LENGTH:
@@ -120,6 +140,8 @@ class CustomTrigger:
     pattern: str
     compiled: object
     enabled: bool = True
+    response: str = ""
+    simple_text: str | None = None
 
 
 @dataclass
@@ -127,6 +149,7 @@ class MatchResult:
     pool: str
     trigger_name: str
     is_builtin: bool
+    response: str | None = None
 
 
 def match_message(content, custom_triggers, builtin_enabled):
@@ -139,7 +162,12 @@ def match_message(content, custom_triggers, builtin_enabled):
             continue
         try:
             if trigger.compiled.search(content, timeout=MATCH_TIMEOUT):
-                return MatchResult(pool="meow", trigger_name=trigger.name, is_builtin=False)
+                return MatchResult(
+                    pool="meow",
+                    trigger_name=trigger.name,
+                    is_builtin=False,
+                    response=trigger.response or None,
+                )
         except TimeoutError:
             logger.warning("Regex timeout for custom trigger %r", trigger.name)
         except regex.error:
