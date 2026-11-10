@@ -6,6 +6,8 @@ from db import get_db
 from matcher import (
     BUILTIN_TRIGGERS,
     MAX_CUSTOM_TRIGGERS,
+    MAX_NAME_LENGTH,
+    MAX_RESPONSE_LENGTH,
     CustomTrigger,
     RegexValidationError,
     compile_custom,
@@ -13,6 +15,28 @@ from matcher import (
 )
 
 logger = logging.getLogger("store")
+
+
+def _clean_name(name):
+    name = (name or "").strip()
+    if not name:
+        raise RegexValidationError("Give the trigger a name.")
+    if len(name) > MAX_NAME_LENGTH:
+        raise RegexValidationError(
+            f"That name is too long. Keep it under {MAX_NAME_LENGTH} characters."
+        )
+    return name
+
+
+def _clean_response(response):
+    response = (response or "").strip()
+    if not response:
+        raise RegexValidationError("Give the bot a reply.")
+    if len(response) > MAX_RESPONSE_LENGTH:
+        raise RegexValidationError(
+            f"That reply is too long. Keep it under {MAX_RESPONSE_LENGTH} characters."
+        )
+    return response
 
 
 @dataclass
@@ -61,8 +85,8 @@ class GuildConfigStore:
 
             custom_triggers = []
             for item in conn.execute(
-                "SELECT name, name_lower, pattern, enabled FROM custom_triggers "
-                "WHERE guild_id = ? ORDER BY id ASC",
+                "SELECT name, name_lower, pattern, enabled, response, simple_text "
+                "FROM custom_triggers WHERE guild_id = ? ORDER BY id ASC",
                 (guild_id,),
             ):
                 compiled = compile_stored(item["pattern"])
@@ -80,6 +104,8 @@ class GuildConfigStore:
                         pattern=item["pattern"],
                         compiled=compiled,
                         enabled=bool(item["enabled"]),
+                        response=item["response"] or "",
+                        simple_text=item["simple_text"],
                     )
                 )
         finally:
@@ -137,15 +163,11 @@ class GuildConfigStore:
             conn.close()
         self.invalidate(guild_id)
 
-    def add_custom(self, guild_id, name, pattern, created_by=None):
-        name = (name or "").strip()
-        if not name:
-            raise RegexValidationError("Give the trigger a name.")
-        if len(name) > 32:
-            raise RegexValidationError(
-                "That name is too long. Keep it under 32 characters."
-            )
-
+    def add_custom(
+        self, guild_id, name, pattern, response, simple_text=None, created_by=None
+    ):
+        name = _clean_name(name)
+        response = _clean_response(response)
         name_lower = name.lower()
         compile_custom(pattern)
 
@@ -170,9 +192,19 @@ class GuildConfigStore:
 
             conn.execute(
                 "INSERT INTO custom_triggers "
-                "(guild_id, name, name_lower, pattern, enabled, created_by, created_at) "
-                "VALUES (?, ?, ?, ?, 1, ?, ?)",
-                (guild_id, name, name_lower, pattern.strip(), created_by, int(time.time())),
+                "(guild_id, name, name_lower, pattern, response, simple_text, "
+                "enabled, created_by, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)",
+                (
+                    guild_id,
+                    name,
+                    name_lower,
+                    pattern.strip(),
+                    response,
+                    simple_text.strip() if simple_text else None,
+                    created_by,
+                    int(time.time()),
+                ),
             )
             conn.commit()
         finally:
@@ -180,6 +212,57 @@ class GuildConfigStore:
 
         self.invalidate(guild_id)
         return name
+
+    def update_custom(
+        self, guild_id, name_lower, name, pattern, response, simple_text=None
+    ):
+        name = _clean_name(name)
+        response = _clean_response(response)
+        new_name_lower = name.lower()
+        compile_custom(pattern)
+
+        conn = self._connect()
+        try:
+            existing = conn.execute(
+                "SELECT 1 FROM custom_triggers WHERE guild_id = ? AND name_lower = ?",
+                (guild_id, name_lower),
+            ).fetchone()
+            if existing is None:
+                raise RegexValidationError("That trigger is gone.")
+
+            duplicate = conn.execute(
+                "SELECT 1 FROM custom_triggers "
+                "WHERE guild_id = ? AND name_lower = ? AND name_lower != ?",
+                (guild_id, new_name_lower, name_lower),
+            ).fetchone()
+            if duplicate:
+                raise RegexValidationError("A trigger with that name already exists.")
+
+            conn.execute(
+                "UPDATE custom_triggers SET name = ?, name_lower = ?, pattern = ?, "
+                "response = ?, simple_text = ? WHERE guild_id = ? AND name_lower = ?",
+                (
+                    name,
+                    new_name_lower,
+                    pattern.strip(),
+                    response,
+                    simple_text.strip() if simple_text else None,
+                    guild_id,
+                    name_lower,
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+        self.invalidate(guild_id)
+        return name
+
+    def get_custom(self, guild_id, name_lower):
+        for trigger in self.get(guild_id).custom_triggers:
+            if trigger.name_lower == name_lower:
+                return trigger
+        return None
 
     def remove_custom(self, guild_id, name_lower):
         conn = self._connect()
@@ -214,6 +297,8 @@ class GuildConfigStore:
                     "label": trigger.name,
                     "enabled": trigger.enabled,
                     "custom": True,
+                    "response": trigger.response,
+                    "simple": trigger.simple_text is not None,
                 }
             )
         return items
