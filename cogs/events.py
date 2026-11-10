@@ -53,6 +53,46 @@ class EventsCog(commands.Cog):
         self._ready_done = True
 
     @commands.Cog.listener()
+    async def on_message(self, message):
+        logger.debug(
+            "message guild=%s channel=%s author=%s(%s) content=%r",
+            getattr(message.guild, "id", None),
+            getattr(message.channel, "id", None),
+            message.author,
+            message.author.id,
+            message.content,
+        )
+
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction):
+        user = interaction.user
+        if interaction.type is discord.InteractionType.application_command:
+            command = interaction.command
+            name = getattr(command, "qualified_name", None)
+            if name is None and interaction.data:
+                name = interaction.data.get("name", "?")
+            logger.debug(
+                "command /%s user=%s(%s) guild=%s channel=%s options=%r",
+                name or "?",
+                user,
+                getattr(user, "id", None),
+                getattr(interaction.guild, "id", None),
+                getattr(interaction.channel, "id", None),
+                interaction.data.get("options") if interaction.data else None,
+            )
+            return
+
+        logger.debug(
+            "interaction type=%s user=%s(%s) guild=%s channel=%s data=%r",
+            interaction.type,
+            user,
+            getattr(user, "id", None),
+            getattr(interaction.guild, "id", None),
+            getattr(interaction.channel, "id", None),
+            interaction.data,
+        )
+
+    @commands.Cog.listener()
     async def on_guild_join(self, guild):
         logger.info("Joined guild %s (%s)", guild.name, guild.id)
         try:
