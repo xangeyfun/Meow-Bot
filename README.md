@@ -2,14 +2,15 @@
 
 a discord bot that says meow.
 
-it watches chat for meow like messages and replies with a random meow. server admins can add custom regex triggers, toggle built in triggers, and turn the bot off per server. it also counts successful replies and shows live stats on a Flask website.
+it watches chat for meow like messages and replies with a random meow. server admins can add custom triggers and replies, toggle built in triggers, and turn the bot off per server. it also counts successful replies and shows live stats on a Flask website.
 
 ## features
 
 - replies to meow, mreow, mew, mrow, mrrp, nya, purr, and similar cat noises
 - optional woof trigger, off by default
 - per server settings with one `/config` panel
-- up to 25 custom regex triggers per server, tested before saving
+- up to 25 custom triggers per server, each with its own reply
+- simple mode for a word or phrase, advanced mode for regex
 - per channel rate limit of 5 replies per 5 seconds
 - server leaderboards and global meow totals
 - commands reply in chat by default, with an optional `hidden` flag
@@ -54,6 +55,7 @@ it watches chat for meow like messages and replies with a random meow. server ad
 | --- | --- | --- |
 | `TOKEN` | yes | Discord bot token |
 | `MEOW_DB_PATH` | no | SQLite file shared by the bot and website. Defaults to `database.db` |
+| `DEBUG` | no | set to `1` to log commands, messages, and app debug output to the console |
 | `GUILD_ID` | no | sync slash commands to one server during development |
 | `DISCORD_INVITE_URL` | no | invite link used by the bot and website |
 | `SITE_URL` | no | public website URL used for canonical and Open Graph tags |
@@ -80,7 +82,9 @@ it watches chat for meow like messages and replies with a random meow. server ad
 
 every command accepts `hidden:true` to show the reply only to the person who ran it. replies are public by default.
 
-## custom regex safety
+## custom triggers
+
+admins can add custom triggers from `/config`. simple mode takes a word or phrase and a reply, and the bot answers when a message contains it. advanced mode takes a regex and a reply for exact control.
 
 custom patterns are limited to 200 characters. each pattern is compiled with the `regex` package and tested against a corpus of awkward inputs before it is saved. patterns that match an empty message, time out, or fail a safety test are rejected. stored patterns are checked again when they are loaded. matching also uses a 50 ms timeout.
 
