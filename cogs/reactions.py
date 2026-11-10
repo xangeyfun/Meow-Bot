@@ -50,8 +50,11 @@ class ReactionsCog(commands.Cog):
         if not self.buckets.allow(message.guild.id, message.channel.id):
             return
 
-        pool = RESPONSES.get(result.pool) or RESPONSES["meow"]
-        reply = random.choice(pool)
+        if result.response:
+            reply = result.response
+        else:
+            pool = RESPONSES.get(result.pool) or RESPONSES["meow"]
+            reply = random.choice(pool)
 
         try:
             await message.reply(
