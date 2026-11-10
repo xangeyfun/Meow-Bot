@@ -1,3 +1,9 @@
+def _add_column(conn, table, column, definition):
+    columns = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})")}
+    if column not in columns:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+
+
 def create_schema(conn):
     cur = conn.cursor()
 
@@ -38,6 +44,9 @@ def create_schema(conn):
         )
         """
     )
+
+    _add_column(conn, "custom_triggers", "response", "TEXT NOT NULL DEFAULT ''")
+    _add_column(conn, "custom_triggers", "simple_text", "TEXT")
 
     cur.execute(
         """
