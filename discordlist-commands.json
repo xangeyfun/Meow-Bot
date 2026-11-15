@@ -1,0 +1,99 @@
+[
+  {
+    "type": 1,
+    "name": "help",
+    "description": "show the command list",
+    "options": [
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "ping",
+    "description": "check latency",
+    "options": [
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "stats",
+    "description": "show meow stats for a user",
+    "options": [
+      {
+        "type": 6,
+        "name": "user",
+        "description": "the user to check. defaults to you.",
+        "required": false
+      },
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "leaderboard",
+    "description": "top meowers in this server",
+    "options": [
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "totalmeows",
+    "description": "total meows across all servers",
+    "options": [
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "github",
+    "description": "get the source link",
+    "options": [
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "config",
+    "description": "open server settings",
+    "options": [
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the panel to you",
+        "required": false
+      }
+    ]
+  }
+]
