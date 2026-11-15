@@ -57,6 +57,7 @@ it watches chat for meow like messages and replies with a random meow. server ad
 | `MEOW_DB_PATH` | no | SQLite file shared by the bot and website. Defaults to `database.db` |
 | `DEBUG` | no | set to `1` to log commands, messages, and app debug output to the console |
 | `GUILD_ID` | no | sync slash commands to one server during development |
+| `GUILD_LOG_CHANNEL_ID` | no | channel id where join and leave notifications are posted |
 | `DISCORD_INVITE_URL` | no | invite link used by the bot and website |
 | `SITE_URL` | no | public website URL used for canonical and Open Graph tags |
 | `SUPPORT_URL` | no | optional support link. If empty, the site points to GitHub issues |
