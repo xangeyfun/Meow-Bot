@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">docs</p>
+  <h1>{% block docs_heading %}docs{% endblock %}</h1>
+  <p class="lede">{% block docs_lede %}guides for the cat.{% endblock %}</p>
+</section>
+
+<div class="docs-layout">
+  <nav class="docs-nav" aria-label="documentation">
+    <a href="{{ url_for('docs_page') }}" {% if doc_slug == 'overview' %}aria-current="page"{% endif %}>overview</a>
+    {% for doc in docs %}
+    <a href="{{ url_for(doc.endpoint) }}" {% if doc_slug == doc.slug %}aria-current="page"{% endif %}>{{ doc.title }}</a>
+    {% endfor %}
+  </nav>
+  <article class="docs-content prose">
+    {% block docs_content %}{% endblock %}
+  </article>
+</div>
+{% endblock %}
