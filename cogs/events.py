@@ -80,12 +80,12 @@ class EventsCog(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         logger.debug(
-            "message guild=%s channel=%s author=%s(%s) content=%r",
+            "message guild=%s channel=%s author=%s(%s) length=%s",
             getattr(message.guild, "id", None),
             getattr(message.channel, "id", None),
             message.author,
             message.author.id,
-            message.content,
+            len(message.content or ""),
         )
 
     @commands.Cog.listener()
