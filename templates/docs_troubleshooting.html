@@ -1,0 +1,31 @@
+{% extends "docs_base.html" %}
+{% block title %}troubleshooting | {{ bot_name }} docs{% endblock %}
+{% block description %}fix common meow bot problems with triggers, commands, and stats.{% endblock %}
+{% block docs_heading %}troubleshooting{% endblock %}
+{% block docs_lede %}a short checklist for a quiet cat.{% endblock %}
+{% block docs_content %}
+<h2>the bot does not reply</h2>
+<ol>
+  <li>check <code>/ping</code> and the <a href="{{ url_for('status_page') }}">status page</a>.</li>
+  <li>open <code>/config</code> and confirm the bot is on.</li>
+  <li>check channel filters. a thread needs its own allow rule.</li>
+  <li>if you expected a woof, turn on the woof trigger. it starts off.</li>
+  <li>check the rate limit. the bot sends at most 5 replies per 5 seconds in a channel.</li>
+  <li>confirm the bot can read messages and send messages in that channel.</li>
+</ol>
+<h2>slash commands are missing</h2>
+<p>invite the bot again with the <code>applications.commands</code> scope. discord can take a few minutes to show new commands after an update.</p>
+<h2>a custom trigger will not save</h2>
+<ul>
+  <li>the server already has 25 custom triggers</li>
+  <li>the pattern is empty, too long, or the same as an existing trigger</li>
+  <li>the reply is empty or longer than 500 characters</li>
+  <li>an advanced pattern was rejected by the regex test</li>
+</ul>
+<h2>stats look stale</h2>
+<p>counts update every few seconds. the number of servers and meowers can take a few minutes to catch up.</p>
+<h2>the website shows an older count</h2>
+<p>wait a few seconds and refresh the page. the website updates on a short delay.</p>
+<h2>still stuck</h2>
+<p>open an issue on <a href="{{ github_issues_url }}">github</a> or use the <a href="{{ url_for('support_page') }}">support page</a>. include what you tried and any error text.</p>
+{% endblock %}
