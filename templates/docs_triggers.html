@@ -1,0 +1,27 @@
+{% extends "docs_base.html" %}
+{% block title %}triggers and filters | {{ bot_name }} docs{% endblock %}
+{% block description %}built in triggers, custom replies, and channel filters for meow bot.{% endblock %}
+{% block docs_heading %}triggers and filters{% endblock %}
+{% block docs_lede %}teach the cat new sounds and choose where it may speak.{% endblock %}
+{% block docs_content %}
+<h2>built in triggers</h2>
+<p>the defaults are on unless an admin turns them off. the <code>woof</code> reply is separate and starts off. built in replies use the shared meow pool.</p>
+<h2>custom triggers</h2>
+<p>open <code>/config</code> and use the trigger controls. each server can have up to 25 custom triggers. simple triggers match a word or phrase, are case insensitive, and only fire on word boundaries. advanced triggers are regular expressions, capped at 200 characters and tested before they are saved.</p>
+<p>custom triggers are checked before built in triggers. if two custom triggers could match the same message, the first one wins. replies are capped at 500 characters.</p>
+<h3>simple example</h3>
+<p>trigger <code>good morning</code>, reply <code>mrrp back</code>. that matches the phrase and not every word inside it.</p>
+<h3>advanced example</h3>
+<p>trigger <code>^mrr+p+$</code>, reply <code>mrrp</code>. this catches longer purr like noises without opening the door to expensive patterns.</p>
+<h2>channel filters</h2>
+<p>channel filters decide where the cat can reply. there are three states:</p>
+<ul>
+  <li><strong>no rules:</strong> every channel is allowed</li>
+  <li><strong>allow list:</strong> once any channel is allowed, only allowed channels are used</li>
+  <li><strong>deny list:</strong> denied channels are always blocked, even if they are also allowed</li>
+</ul>
+<p>threads count as their own channels. if you want the cat in a thread, add that thread to the allow list. use <code>/config</code> to add, remove, or clear rules.</p>
+<h2>matching limits</h2>
+<p>very long messages are only checked for the first 2000 characters. advanced patterns are also time limited, so a bad pattern cannot slow down the bot.</p>
+<p>custom text is never saved to the database. only trigger patterns and replies are stored. read the <a href="{{ url_for('privacy_page') }}">privacy page</a> for the full data picture.</p>
+{% endblock %}
