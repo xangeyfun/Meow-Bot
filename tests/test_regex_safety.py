@@ -1,6 +1,7 @@
 import pytest
 import regex
 
+import matcher
 from matcher import (
     CustomTrigger,
     RegexValidationError,
@@ -43,7 +44,8 @@ def test_stored_catastrophic_rejected():
     assert compile_stored(r"(a+)+$") is None
 
 
-def test_runtime_timeout_is_caught():
+def test_runtime_timeout_is_caught(monkeypatch):
+    monkeypatch.setattr(matcher, "MAX_MATCH_LENGTH", 30001)
     compiled = regex.compile(r"(a+)+$", regex.IGNORECASE)
     trigger = CustomTrigger(
         name="slow",
