@@ -85,6 +85,26 @@ def _format_custom_status(triggers):
     return _format_lines(lines)
 
 
+def _channel_label(guild, channel_id):
+    channel = guild.get_channel_or_thread(channel_id) if guild else None
+    name = getattr(channel, "name", None)
+    return f"#{name}" if name else f"channel {channel_id}"
+
+
+def _format_channel_list(guild, channel_ids):
+    return _format_labels(
+        [_channel_label(guild, channel_id) for channel_id in sorted(channel_ids)]
+    )
+
+
+def _channel_summary(config):
+    if not config.channel_rules:
+        return "all channels"
+    allowed = sum(1 for value in config.channel_rules.values() if value)
+    denied = len(config.channel_rules) - allowed
+    return f"allow {allowed}, deny {denied}"
+
+
 async def _finish_manage(
     interaction, cog, guild_id, author_id, message, old_view=None
 ):
@@ -166,6 +186,15 @@ class AuthorView(discord.ui.View):
             ),
         )
 
+    async def show_channels(self, interaction: discord.Interaction):
+        self.stop()
+        await interaction.response.edit_message(
+            embed=self.cog.build_channels_embed(self.guild_id),
+            view=ChannelFilterView.from_interaction(
+                interaction, self.cog, self.guild_id, self.author_id
+            ),
+        )
+
 
 class ConfigView(AuthorView):
     def __init__(self, cog, guild_id, author_id):
@@ -173,6 +202,7 @@ class ConfigView(AuthorView):
         enabled = cog.store.get(guild_id).enabled
 
         self.add_item(ManageTriggersButton(cog, guild_id, author_id))
+        self.add_item(ChannelsButton(cog, guild_id, author_id))
         self.add_item(BotToggleButton(cog, guild_id, author_id, enabled))
         self.add_item(CloseButton(cog, guild_id, author_id))
 
@@ -229,6 +259,122 @@ class ManageTriggersView(AuthorView):
                 interaction, self.cog, self.guild_id, self.author_id
             ),
         )
+
+
+class ChannelFilterView(AuthorView):
+    def __init__(self, cog, guild_id, author_id):
+        super().__init__(cog, guild_id, author_id)
+        config = cog.store.get(guild_id)
+        has_rules = bool(config.channel_rules)
+
+        self.add_item(AllowChannelSelect(cog, guild_id, author_id, row=0))
+        self.add_item(DenyChannelSelect(cog, guild_id, author_id, row=1))
+        if has_rules:
+            self.add_item(ChannelRuleRemoveSelect(cog, guild_id, author_id, row=2))
+            self.add_item(ClearChannelsButton(cog, guild_id, author_id))
+        self.add_item(OverviewButton(cog, guild_id, author_id))
+        self.add_item(CloseButton(cog, guild_id, author_id))
+
+    async def refresh(self, interaction: discord.Interaction):
+        self.stop()
+        await interaction.response.edit_message(
+            embed=self.cog.build_channels_embed(self.guild_id),
+            view=ChannelFilterView.from_interaction(
+                interaction, self.cog, self.guild_id, self.author_id
+            ),
+        )
+
+
+class ChannelsButton(discord.ui.Button):
+    def __init__(self, cog, guild_id, author_id):
+        self.cog = cog
+        self.guild_id = guild_id
+        self.author_id = author_id
+        super().__init__(
+            label="channels", style=discord.ButtonStyle.secondary, row=0
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        await self.view.show_channels(interaction)
+
+
+class _ChannelRuleSelect(discord.ui.ChannelSelect):
+    allowed = None
+
+    def __init__(self, cog, guild_id, author_id, row):
+        self.cog = cog
+        self.guild_id = guild_id
+        self.author_id = author_id
+        super().__init__(
+            placeholder="allow a channel" if self.allowed else "deny a channel",
+            channel_types=[
+                discord.ChannelType.text,
+                discord.ChannelType.news,
+                discord.ChannelType.public_thread,
+                discord.ChannelType.private_thread,
+            ],
+            min_values=1,
+            max_values=1,
+            row=row,
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        channel = self.values[0]
+        self.cog.store.set_channel_rule(self.guild_id, channel.id, self.allowed)
+        await self.view.refresh(interaction)
+
+
+class AllowChannelSelect(_ChannelRuleSelect):
+    allowed = True
+
+
+class DenyChannelSelect(_ChannelRuleSelect):
+    allowed = False
+
+
+class ChannelRuleRemoveSelect(discord.ui.Select):
+    def __init__(self, cog, guild_id, author_id, row):
+        self.cog = cog
+        self.guild_id = guild_id
+        self.author_id = author_id
+        guild = cog.bot.get_guild(guild_id)
+        config = cog.store.get(guild_id)
+        options = []
+        for channel_id, allowed in sorted(config.channel_rules.items())[:25]:
+            options.append(
+                discord.SelectOption(
+                    label=_channel_label(guild, channel_id)[:100],
+                    value=str(channel_id),
+                    description="allow list" if allowed else "deny list",
+                )
+            )
+        super().__init__(
+            placeholder="remove a channel filter",
+            min_values=1,
+            max_values=1,
+            options=options,
+            row=row,
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        self.cog.store.remove_channel_rule(self.guild_id, int(self.values[0]))
+        await self.view.refresh(interaction)
+
+
+class ClearChannelsButton(discord.ui.Button):
+    def __init__(self, cog, guild_id, author_id):
+        self.cog = cog
+        self.guild_id = guild_id
+        self.author_id = author_id
+        super().__init__(
+            label="clear filters",
+            style=discord.ButtonStyle.danger,
+            row=3,
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        self.cog.store.clear_channel_rules(self.guild_id)
+        await self.view.refresh(interaction)
 
 
 class TriggerToggleSelect(discord.ui.Select):
@@ -844,6 +990,11 @@ class ConfigCog(commands.Cog):
             inline=True,
         )
         embed.add_field(
+            name="channels",
+            value=_channel_summary(config),
+            inline=True,
+        )
+        embed.add_field(
             name="built in",
             value=_format_builtin_status(config),
             inline=False,
@@ -854,7 +1005,7 @@ class ConfigCog(commands.Cog):
             inline=False,
         )
         embed.set_footer(
-            text="open manage triggers to add, edit, or remove custom triggers."
+            text="open manage triggers or channels to change how the bot behaves."
         )
         return embed
 
@@ -880,6 +1031,44 @@ class ConfigCog(commands.Cog):
             inline=False,
         )
         embed.set_footer(text="custom triggers reply with their own message.")
+        return embed
+
+    def build_channels_embed(self, guild_id):
+        config = self.store.get(guild_id)
+        guild = self.bot.get_guild(guild_id)
+        allowed = [
+            channel_id
+            for channel_id, value in config.channel_rules.items()
+            if value
+        ]
+        denied = [
+            channel_id
+            for channel_id, value in config.channel_rules.items()
+            if not value
+        ]
+
+        embed = discord.Embed(
+            title="channel filters",
+            description=(
+                "pick channels to allow or deny. if the allow list has channels, "
+                "meow bot only replies there. denied channels always stay quiet. "
+                "threads count as their own channels."
+            ),
+            color=COLOR,
+        )
+        embed.add_field(
+            name="allowed",
+            value=_format_channel_list(guild, allowed),
+            inline=False,
+        )
+        embed.add_field(
+            name="denied",
+            value=_format_channel_list(guild, denied),
+            inline=False,
+        )
+        embed.set_footer(
+            text="no filters means the bot replies in every channel."
+        )
         return embed
 
     def build_add_embed(self):
