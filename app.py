@@ -32,11 +32,39 @@ CACHE_TTL = max(5, int(os.getenv("CACHE_TTL", "20")))
 COMMANDS = (
     ("/help", "show the command list", "everyone"),
     ("/ping", "check latency", "everyone"),
-    ("/stats [user]", "meow count for a user", "everyone"),
-    ("/leaderboard", "top meowers in this server", "everyone"),
-    ("/totalmeows", "total meows across all servers", "everyone"),
+    ("/stats [user]", "server and global meow stats", "everyone"),
+    ("/leaderboard", "top meowers and server summary", "everyone"),
+    ("/profile [user]", "cross-server meow profile", "everyone"),
+    ("/totalmeows", "global meows and totals", "everyone"),
     ("/github", "get the source link", "everyone"),
     ("/config", "open server settings", "manage server"),
+)
+
+DOCS = (
+    {
+        "slug": "getting-started",
+        "title": "getting started",
+        "description": "invite the cat, say meow, and learn the basics.",
+        "endpoint": "docs_getting_started_page",
+    },
+    {
+        "slug": "triggers",
+        "title": "triggers and filters",
+        "description": "built in sounds, custom replies, and channel filters.",
+        "endpoint": "docs_triggers_page",
+    },
+    {
+        "slug": "stats",
+        "title": "stats and profiles",
+        "description": "server ranks, global totals, and cross server profiles.",
+        "endpoint": "docs_stats_page",
+    },
+    {
+        "slug": "troubleshooting",
+        "title": "troubleshooting",
+        "description": "fix the usual problems before they turn into hairballs.",
+        "endpoint": "docs_troubleshooting_page",
+    },
 )
 
 app = Flask(__name__)
@@ -115,6 +143,7 @@ def inject_site():
         "support_url": SUPPORT_URL,
         "site_url": SITE_URL,
         "invite_url": INVITE_URL,
+        "docs": DOCS,
         "current_year": datetime.now(timezone.utc).year,
     }
 
@@ -194,6 +223,35 @@ def terms_page():
 @app.get("/support")
 def support_page():
     return render_template("support.html", page="support")
+
+
+@app.get("/docs")
+def docs_page():
+    return render_template("docs.html", page="info", doc_slug="overview")
+
+
+@app.get("/docs/getting-started")
+def docs_getting_started_page():
+    return render_template(
+        "docs_getting_started.html", page="info", doc_slug="getting-started"
+    )
+
+
+@app.get("/docs/triggers")
+def docs_triggers_page():
+    return render_template("docs_triggers.html", page="info", doc_slug="triggers")
+
+
+@app.get("/docs/stats")
+def docs_stats_page():
+    return render_template("docs_stats.html", page="info", doc_slug="stats")
+
+
+@app.get("/docs/troubleshooting")
+def docs_troubleshooting_page():
+    return render_template(
+        "docs_troubleshooting.html", page="info", doc_slug="troubleshooting"
+    )
 
 
 @app.get("/invite")
