@@ -1,0 +1,25 @@
+{% extends "docs_base.html" %}
+{% block title %}stats and profiles | {{ bot_name }} docs{% endblock %}
+{% block description %}how meow bot counts meows, ranks users, and updates stats.{% endblock %}
+{% block docs_heading %}stats and profiles{% endblock %}
+{% block docs_lede %}what the numbers mean and when they change.{% endblock %}
+{% block docs_content %}
+<h2>what counts</h2>
+<p>one successful bot reply adds one meow for the author in that server. blocked channels, rate limited messages, bot authors, and failed sends do not count. totals are all time and are kept separately for each server.</p>
+<h2>the commands</h2>
+<h3><code>/stats [user]</code></h3>
+<p>shows the user's rank and share in this server, their last meow, the server total, and their global total and rank. leave out the user to check yourself.</p>
+<h3><code>/leaderboard</code></h3>
+<p>shows the top 10 meowers, the server total, the number of meowers, the server average, and your own rank.</p>
+<h3><code>/profile [user]</code></h3>
+<p>shows a cross server profile: global total, global rank, servers meowed in, best server, and last meow. it only works inside a server.</p>
+<h3><code>/totalmeows</code></h3>
+<p>shows the all time global total, the number of servers the bot is in, and the number of people with a meow.</p>
+<p>all of these accept <code>hidden:true</code> for a private reply.</p>
+<h2>how ranks work</h2>
+<p>rank 1 is the highest count. if two people have the same count, they share the same rank.</p>
+<h2>when numbers update</h2>
+<p>a new meow can take a few seconds to appear. server and global totals may take a few minutes to catch up. if a number still looks wrong after that, check the troubleshooting guide.</p>
+<h2>privacy</h2>
+<p>stats store discord ids and counts. message text is not stored. the <a href="{{ url_for('privacy_page') }}">privacy page</a> lists the full set of data and the retention details.</p>
+{% endblock %}
