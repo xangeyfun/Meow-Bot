@@ -1,5 +1,6 @@
 import logging
 import random
+import time
 from dataclasses import dataclass
 
 import regex
@@ -11,11 +12,17 @@ MAX_CUSTOM_TRIGGERS = 25
 MAX_NAME_LENGTH = 32
 MAX_RESPONSE_LENGTH = 500
 MAX_SIMPLE_LENGTH = 32
+MAX_MATCH_LENGTH = 2000
 MATCH_TIMEOUT = 0.05
+CUSTOM_MATCH_BUDGET = 0.08
+BUILTIN_MATCH_BUDGET = 0.02
 VALIDATION_TIMEOUT = 0.1
 
-CAT_PATTERN = r"^\**((m+[erao]+[wp]+|n+y+a+|p+u*r+)s*\**\s*)+~*\s*[.!?]*\s*(:3+)?\**$"
-DOG_PATTERN = r"^\**((w+[oa]+f+|b+a+r+k+|a+r+f+|w*r+u+f+|a+w+o+)s*\**\s*)+~*\s*[.!?]*\s*(:3+)?\**$"
+CAT_SOUND = r"(?:m+[erao]+[wp]+|n+y+a+|p+u*r+)s*"
+DOG_SOUND = r"(?:w+[oa]+f+|b+a+r+k+|a+r+f+|w*r+u+f+|a+w+o+)s*"
+TRAILING = r"[.!?,;:~]*\s*(?:[:;=]-?[']?[()DPp3cC]+|<3)?"
+CAT_PATTERN = rf"^\**((?:{CAT_SOUND}\**\s*{TRAILING}\s*)+)\**$"
+DOG_PATTERN = rf"^\**((?:{DOG_SOUND}\**\s*{TRAILING}\s*)+)\**$"
 
 
 @dataclass(frozen=True)
@@ -152,16 +159,64 @@ class MatchResult:
     response: str | None = None
 
 
+def _is_word_character(character):
+    return character.isalnum() or character == "_"
+
+
+def _literal_matches(content, text):
+    needle = text.lower()
+    haystack = content.lower()
+    if not needle:
+        return False
+
+    check_left = _is_word_character(text[0])
+    check_right = _is_word_character(text[-1])
+    start = 0
+    while True:
+        index = haystack.find(needle, start)
+        if index == -1:
+            return False
+        end = index + len(needle)
+        left_ok = (
+            not check_left or index == 0 or not _is_word_character(haystack[index - 1])
+        )
+        right_ok = (
+            not check_right
+            or end == len(haystack)
+            or not _is_word_character(haystack[end])
+        )
+        if left_ok and right_ok:
+            return True
+        start = index + 1
+
+
 def match_message(content, custom_triggers, builtin_enabled):
-    content = content.strip()
+    content = (content or "").strip()
     if not content:
         return None
+    content = content[:MAX_MATCH_LENGTH]
 
+    custom_deadline = time.monotonic() + CUSTOM_MATCH_BUDGET
     for trigger in custom_triggers:
         if not trigger.enabled:
             continue
+        if trigger.simple_text is not None:
+            if _literal_matches(content, trigger.simple_text):
+                return MatchResult(
+                    pool="meow",
+                    trigger_name=trigger.name,
+                    is_builtin=False,
+                    response=trigger.response or None,
+                )
+            continue
+
+        remaining = custom_deadline - time.monotonic()
+        if remaining <= 0:
+            logger.warning("Custom trigger matching budget exhausted")
+            break
         try:
-            if trigger.compiled.search(content, timeout=MATCH_TIMEOUT):
+            timeout = min(MATCH_TIMEOUT, remaining)
+            if trigger.compiled.search(content, timeout=timeout):
                 return MatchResult(
                     pool="meow",
                     trigger_name=trigger.name,
@@ -173,12 +228,18 @@ def match_message(content, custom_triggers, builtin_enabled):
         except regex.error:
             logger.warning("Regex error for custom trigger %r", trigger.name, exc_info=True)
 
+    builtin_deadline = time.monotonic() + BUILTIN_MATCH_BUDGET
     for trigger in BUILTIN_TRIGGERS:
         if not builtin_enabled.get(trigger.key, trigger.default_enabled):
             continue
+        remaining = builtin_deadline - time.monotonic()
+        if remaining <= 0:
+            logger.warning("Built in trigger matching budget exhausted")
+            break
         compiled = COMPILED_BUILTINS[trigger.key]
         try:
-            if compiled.search(content, timeout=MATCH_TIMEOUT):
+            timeout = min(MATCH_TIMEOUT, remaining)
+            if compiled.search(content, timeout=timeout):
                 return MatchResult(pool=trigger.pool, trigger_name=trigger.label, is_builtin=True)
         except TimeoutError:
             logger.warning("Regex timeout for built in trigger %r", trigger.key)
