@@ -2,6 +2,7 @@ import pytest
 import regex
 
 from matcher import (
+    MAX_MATCH_LENGTH,
     CustomTrigger,
     RegexValidationError,
     build_simple_pattern,
@@ -13,7 +14,7 @@ from matcher import (
 BUILTINS = {"meow": True, "woof": False}
 
 
-def make_custom(name, pattern, enabled=True, response=""):
+def make_custom(name, pattern, enabled=True, response="", simple_text=None):
     return CustomTrigger(
         name=name,
         name_lower=name.lower(),
@@ -21,6 +22,7 @@ def make_custom(name, pattern, enabled=True, response=""):
         compiled=regex.compile(pattern, regex.IGNORECASE),
         enabled=enabled,
         response=response,
+        simple_text=simple_text,
     )
 
 
@@ -39,6 +41,15 @@ def make_custom(name, pattern, enabled=True, response=""):
         "meow :3",
         "**meow**",
         "meow meow",
+        "meow,",
+        "meow;",
+        "meow :)",
+        "meow :P",
+        "meow <3",
+        "meow :')",
+        "meow :3c",
+        "meow, meow",
+        "meow, meow :)",
     ],
 )
 def test_meow_builtin_matches(content):
@@ -61,9 +72,10 @@ def test_woof_disabled_by_default():
 
 
 def test_woof_when_enabled():
-    result = match_message("woof", [], {"meow": True, "woof": True})
-    assert result is not None
-    assert result.pool == "woof"
+    for content in ("woof", "woof,", "bark :)", "woof woof"):
+        result = match_message(content, [], {"meow": True, "woof": True})
+        assert result is not None
+        assert result.pool == "woof"
 
 
 def test_custom_checked_first():
@@ -97,6 +109,33 @@ def test_custom_no_match_falls_through():
 @pytest.mark.parametrize("content", ["", "   ", "\n\t"])
 def test_empty_content(content):
     assert match_message(content, [], BUILTINS) is None
+
+
+def test_simple_trigger_uses_literal_matching():
+    trigger = make_custom(
+        "mrrp",
+        r"(?<!\w)mrrp(?!\w)",
+        response="mrrp back",
+        simple_text="mrrp",
+    )
+    disabled = {"meow": False, "woof": False}
+    result = match_message("I said mrrp!", [trigger], disabled)
+    assert result is not None
+    assert result.response == "mrrp back"
+    assert match_message("xmrrp", [trigger], disabled) is None
+    assert match_message("mrrps", [trigger], disabled) is None
+
+
+def test_match_input_is_capped():
+    trigger = make_custom(
+        "needle",
+        r"needle",
+        response="found",
+        simple_text="needle",
+    )
+    disabled = {"meow": False, "woof": False}
+    content = "x" * MAX_MATCH_LENGTH + " needle"
+    assert match_message(content, [trigger], disabled) is None
 
 
 def test_build_simple_pattern_matches_whole_words():
