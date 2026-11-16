@@ -14,16 +14,17 @@ INVITE_URL = os.getenv(
 HELP_TEXT = f"""meow bot
 
 say meow, mreow, mew, mrow, mrrp, nya, or purr. it will meow back.
-server admins can teach it new sounds and replies with /config.
+server admins can teach it new sounds, replies, and channel filters with /config.
 
 commands
 /help: this message
 /config: server settings for admins
 /ping: check latency
 /github: source code
-/stats [user]: meow count for a user
-/leaderboard: top meowers in this server
-/totalmeows: total meows across all servers
+/stats [user]: server and global meow stats
+/leaderboard: top meowers and server summary
+/profile [user]: cross-server meow profile
+/totalmeows: global meows and totals
 
 every command takes hidden:true if you want the reply only for you.
 
