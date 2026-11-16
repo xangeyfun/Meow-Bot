@@ -113,19 +113,24 @@ def refresh_user_count(db_path=None):
         conn.close()
 
 
-def user_stats(guild_id, user_id, db_path=None):
+def server_user_stats(guild_id, user_id, db_path=None):
     conn = get_db(db_path, readonly=True)
     try:
         row = conn.execute(
-            "SELECT count FROM meow_counts WHERE guild_id = ? AND user_id = ?",
+            "SELECT count, last_meow_at FROM meow_counts "
+            "WHERE guild_id = ? AND user_id = ?",
             (guild_id, user_id),
         ).fetchone()
         count = row["count"] if row else 0
+        last_meow_at = row["last_meow_at"] if row else None
 
         server_row = conn.execute(
             "SELECT total_meows FROM guild_stats WHERE guild_id = ?", (guild_id,)
         ).fetchone()
         server_total = server_row["total_meows"] if server_row else 0
+        server_meowers = conn.execute(
+            "SELECT COUNT(*) FROM meow_counts WHERE guild_id = ?", (guild_id,)
+        ).fetchone()[0]
 
         rank = 0
         if count:
@@ -136,7 +141,91 @@ def user_stats(guild_id, user_id, db_path=None):
                 ).fetchone()[0]
                 + 1
             )
-        return count, rank, server_total
+
+        share = (count / server_total * 100) if server_total else 0.0
+        return {
+            "count": count,
+            "rank": rank,
+            "server_total": server_total,
+            "server_meowers": server_meowers,
+            "share": share,
+            "last_meow_at": last_meow_at,
+        }
+    finally:
+        conn.close()
+
+
+def global_user_stats(user_id, db_path=None):
+    conn = get_db(db_path, readonly=True)
+    try:
+        rows = conn.execute(
+            "SELECT guild_id, count, last_meow_at FROM meow_counts "
+            "WHERE user_id = ? ORDER BY count DESC, last_meow_at ASC",
+            (user_id,),
+        ).fetchall()
+        count = sum(row["count"] for row in rows)
+        best = rows[0] if rows else None
+        last_meow_at = max(
+            (row["last_meow_at"] for row in rows if row["last_meow_at"] is not None),
+            default=None,
+        )
+
+        rank = 0
+        if count:
+            rank = (
+                conn.execute(
+                    "SELECT COUNT(*) + 1 FROM ("
+                    "SELECT user_id, SUM(count) AS total FROM meow_counts "
+                    "GROUP BY user_id"
+                    ") WHERE total > ?",
+                    (count,),
+                ).fetchone()[0]
+            )
+
+        return {
+            "count": count,
+            "rank": rank,
+            "servers": len(rows),
+            "best_guild_id": best["guild_id"] if best else None,
+            "best_count": best["count"] if best else 0,
+            "last_meow_at": last_meow_at,
+        }
+    finally:
+        conn.close()
+
+
+def server_summary(guild_id, db_path=None):
+    conn = get_db(db_path, readonly=True)
+    try:
+        row = conn.execute(
+            "SELECT total_meows FROM guild_stats WHERE guild_id = ?", (guild_id,)
+        ).fetchone()
+        total = row["total_meows"] if row else 0
+        meowers = conn.execute(
+            "SELECT COUNT(*) FROM meow_counts WHERE guild_id = ?", (guild_id,)
+        ).fetchone()[0]
+        average = total / meowers if meowers else 0.0
+        return {"total": total, "meowers": meowers, "average": average}
+    finally:
+        conn.close()
+
+
+def global_summary(db_path=None):
+    conn = get_db(db_path, readonly=True)
+    try:
+        row = conn.execute(
+            "SELECT total_meows, total_guilds, total_users FROM bot_stats WHERE id = 1"
+        ).fetchone()
+        total = row["total_meows"] if row else 0
+        servers = row["total_guilds"] if row else 0
+        meowers = row["total_users"] if row else 0
+        return {
+            "total": total,
+            "servers": servers,
+            "meowers": meowers,
+            "per_server": total / servers if servers else 0.0,
+            "per_meower": total / meowers if meowers else 0.0,
+        }
     finally:
         conn.close()
 
