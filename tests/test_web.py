@@ -11,6 +11,16 @@ def test_index(web_client):
     assert b"it says meow." in response.data
     assert b'data-stat="total_meows"' in response.data
     assert b"online" not in response.data
+    assert b"showcase-detail" in response.data
+    assert b"shot-caption" in response.data
+
+
+def test_back_to_top_control(web_client):
+    for path in ("/", "/commands", "/docs"):
+        response = web_client.get(path)
+        assert response.status_code == 200
+        assert b"data-back-to-top" in response.data
+        assert b'aria-label="back to top"' in response.data
 
 
 def test_stats_api(web_client):
