@@ -45,6 +45,17 @@ def create_schema(conn):
         """
     )
 
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS channel_rules (
+            guild_id INTEGER NOT NULL,
+            channel_id INTEGER NOT NULL,
+            allowed BOOLEAN NOT NULL,
+            PRIMARY KEY (guild_id, channel_id)
+        )
+        """
+    )
+
     _add_column(conn, "custom_triggers", "response", "TEXT NOT NULL DEFAULT ''")
     _add_column(conn, "custom_triggers", "simple_text", "TEXT")
 
@@ -89,7 +100,13 @@ def create_schema(conn):
         "CREATE INDEX IF NOT EXISTS idx_meow_counts_guild_count ON meow_counts(guild_id, count DESC)"
     )
     cur.execute(
+        "CREATE INDEX IF NOT EXISTS idx_meow_counts_user ON meow_counts(user_id)"
+    )
+    cur.execute(
         "CREATE INDEX IF NOT EXISTS idx_custom_triggers_guild ON custom_triggers(guild_id)"
+    )
+    cur.execute(
+        "CREATE INDEX IF NOT EXISTS idx_channel_rules_guild ON channel_rules(guild_id)"
     )
 
     conn.commit()
