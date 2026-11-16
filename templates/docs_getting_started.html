@@ -1,0 +1,26 @@
+{% extends "docs_base.html" %}
+{% block title %}getting started | {{ bot_name }} docs{% endblock %}
+{% block description %}invite meow bot, say meow, and learn the basic commands.{% endblock %}
+{% block docs_heading %}getting started{% endblock %}
+{% block docs_lede %}from invite to first meow.{% endblock %}
+{% block docs_content %}
+<h2>invite the cat</h2>
+<p>add meow bot to your server with the invite button below. the bot needs to read messages, send messages, and use slash commands. the public bot is already set up for this.</p>
+<p><a class="button primary" href="{{ invite_url }}">add to discord</a></p>
+<h2>say meow</h2>
+<p>when the bot sees a meow like message, it replies with a random meow and adds one to the count. punctuation and emoticons are fine. all of these are built in:</p>
+<ul>
+  <li><code>meow</code>, <code>mreow</code>, <code>mew</code>, <code>mrow</code>, <code>mrrp</code>, <code>nya</code>, and <code>purr</code></li>
+  <li>longer versions such as <code>meooooow</code></li>
+  <li>the optional <code>woof</code> trigger, which is off by default</li>
+</ul>
+<h2>the commands you will use most</h2>
+<p><code>/help</code> lists everything. <code>/stats</code> shows your server rank and global total. <code>/leaderboard</code> shows the top meowers in the server. <code>/profile</code> follows you across servers.</p>
+<p>every command replies in chat by default. add <code>hidden:true</code> when you want the reply only visible to you.</p>
+<h2>server settings</h2>
+<p>server admins can open <code>/config</code> to toggle built in triggers, add custom replies, and choose which channels the cat may use. it requires the manage server permission.</p>
+<div class="note-card">
+  <p><strong>good to know:</strong> the cat ignores bots and webhooks. a successful reply is what counts toward stats.</p>
+</div>
+<p>next: <a href="{{ url_for('docs_triggers_page') }}">set up custom triggers and channel filters</a>, or browse the <a href="{{ url_for('commands_page') }}">full command list</a>.</p>
+{% endblock %}
