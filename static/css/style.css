@@ -1402,39 +1402,6 @@ body {
   overflow: visible;
 }
 
-.hero-tail {
-  position: absolute;
-  bottom: 10px;
-  left: -30px;
-  width: 70px;
-  height: 112px;
-  overflow: visible;
-  transform-origin: 86% 95%;
-  animation: tail-swish 4.2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.hero-tail path {
-  fill: var(--accent);
-  stroke: var(--line);
-  stroke-width: 2.5;
-  stroke-linejoin: round;
-}
-
-.hero-art:hover .hero-tail {
-  animation-duration: 2.2s;
-}
-
-@keyframes tail-swish {
-  0%,
-  100% {
-    transform: rotate(-4deg);
-  }
-  50% {
-    transform: rotate(8deg);
-  }
-}
-
 .hero-whiskers {
   position: absolute;
   top: 48%;
@@ -1901,7 +1868,6 @@ table tbody tr:hover {
 }
 
 @media (max-width: 760px) {
-  .hero-tail,
   .hero-whiskers {
     display: none;
   }
@@ -1959,7 +1925,6 @@ table tbody tr:hover {
   .lost-cat-yarn,
   .lost-cat-question,
   .status-dot.online,
-  .hero-tail,
   .nav-invite:hover,
   .theme-toggle.is-flipping svg,
   .stat-number.purr,
