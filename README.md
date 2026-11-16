@@ -9,12 +9,13 @@ it watches chat for meow like messages and replies with a random meow. server ad
 - replies to meow, mreow, mew, mrow, mrrp, nya, purr, and similar cat noises
 - optional woof trigger, off by default
 - per server settings with one `/config` panel
+- channel allow and deny lists so admins can choose where the bot replies
 - up to 25 custom triggers per server, each with its own reply
 - simple mode for a word or phrase, advanced mode for regex
 - per channel rate limit of 5 replies per 5 seconds
-- server leaderboards and global meow totals
+- server leaderboards, global meow totals, and cross-server profiles
 - commands reply in chat by default, with an optional `hidden` flag
-- Flask website with landing, commands, stats, status, info, privacy, terms, and support pages
+- Flask website with landing, commands, stats, status, info, docs, privacy, terms, and support pages
 - light and dark website themes with a saved preference
 - shared SQLite database between the bot and website
 
@@ -77,17 +78,18 @@ it watches chat for meow like messages and replies with a random meow. server ad
 | `/config` | open the server settings panel. requires manage server |
 | `/ping` | check latency |
 | `/github` | get the source link |
-| `/stats [user]` | meow count for a user |
-| `/leaderboard` | top meowers in the server |
-| `/totalmeows` | total meows across all servers |
+| `/stats [user]` | server rank, share, last meow, and global stats for a user |
+| `/leaderboard` | top meowers plus server totals and your rank |
+| `/profile [user]` | cross-server meow profile for a user |
+| `/totalmeows` | global meows, servers, and meowers |
 
 every command accepts `hidden:true` to show the reply only to the person who ran it. replies are public by default.
 
 ## custom triggers
 
-admins can add custom triggers from `/config`. simple mode takes a word or phrase and a reply, and the bot answers when a message contains it. advanced mode takes a regex and a reply for exact control.
+admins can add custom triggers from `/config`. simple mode takes a word or phrase and a reply, and the bot answers when a message contains it. advanced mode takes a regex and a reply for exact control. the same panel has channel allow and deny lists. if the allow list has entries, the bot only replies in those channels. denied channels are always ignored.
 
-custom patterns are limited to 200 characters. each pattern is compiled with the `regex` package and tested against a corpus of awkward inputs before it is saved. patterns that match an empty message, time out, or fail a safety test are rejected. stored patterns are checked again when they are loaded. matching also uses a 50 ms timeout.
+matching is capped at 2000 characters per message and a small time budget per message. custom patterns are limited to 200 characters. each pattern is compiled with the `regex` package and tested against a corpus of awkward inputs before it is saved. patterns that match an empty message, time out, or fail a safety test are rejected. stored patterns are checked again when they are loaded. each regex has a 50 ms timeout, and custom and built in matching each have a small total budget per message.
 
 ## website
 
@@ -100,6 +102,7 @@ pages:
 - `/stats`
 - `/status`
 - `/info`
+- `/docs` and focused guides under `/docs/`
 - `/privacy`
 - `/terms`
 - `/support`
