@@ -42,6 +42,8 @@ class ReactionsCog(commands.Cog):
         config = self.store.get(message.guild.id)
         if not config.enabled:
             return
+        if not config.channel_allowed(message.channel.id):
+            return
 
         result = match_message(content, config.custom_triggers, config.builtin_enabled)
         if result is None:
