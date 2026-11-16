@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}docs | {{ bot_name }}{% endblock %}
+{% block description %}guides for using and configuring meow bot.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">docs</p>
+  <h1>the cat manual</h1>
+  <p class="lede">guides for the bot, the website, and the cat in the middle. start small or read the whole thing.</p>
+</section>
+
+<section class="card-grid">
+  {% for doc in docs %}
+  <a class="card" href="{{ url_for(doc.endpoint) }}"><h2>{{ doc.title }}</h2><p>{{ doc.description }}</p><span class="card-link">read guide</span></a>
+  {% endfor %}
+</section>
+
+<section class="section">
+  <h2>where to start</h2>
+  <p>new to the bot? open <a href="{{ url_for('docs_getting_started_page') }}">getting started</a>. server admins can jump to <a href="{{ url_for('docs_triggers_page') }}">triggers and filters</a>. if the cat has gone quiet, <a href="{{ url_for('docs_troubleshooting_page') }}">troubleshooting</a> has the checklist.</p>
+  <p>the full command list lives on the <a href="{{ url_for('commands_page') }}">commands page</a>. for data details, read the <a href="{{ url_for('privacy_page') }}">privacy page</a>.</p>
+</section>
+{% endblock %}
