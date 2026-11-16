@@ -143,3 +143,54 @@ def test_max_custom_triggers(store):
         store.add_custom(GUILD, f"trig{index}", rf"^mrrp{index}$", REPLY)
     with pytest.raises(RegexValidationError):
         store.add_custom(GUILD, "one-more", r"^mrrp-extra$", REPLY)
+
+
+def test_channel_rules_default_to_all_channels(store):
+    assert store.get(GUILD).channel_rules == {}
+    assert store.get(GUILD).channel_allowed(999) is True
+
+
+def test_channel_allow_list_restricts_channels(store):
+    store.set_channel_rule(GUILD, 111, True)
+    store.set_channel_rule(GUILD, 222, True)
+    config = store.get(GUILD)
+    assert config.channel_rules == {111: True, 222: True}
+    assert config.channel_allowed(111) is True
+    assert config.channel_allowed(333) is False
+
+
+def test_channel_deny_rule_blocks_channel(store):
+    store.set_channel_rule(GUILD, 111, True)
+    store.set_channel_rule(GUILD, 222, False)
+    config = store.get(GUILD)
+    assert config.channel_allowed(111) is True
+    assert config.channel_allowed(222) is False
+    assert config.channel_allowed(333) is False
+
+
+def test_channel_deny_list_without_allow_list(store):
+    store.set_channel_rule(GUILD, 222, False)
+    config = store.get(GUILD)
+    assert config.channel_allowed(111) is True
+    assert config.channel_allowed(222) is False
+
+
+def test_channel_rule_can_change_kind(store):
+    store.set_channel_rule(GUILD, 111, True)
+    store.set_channel_rule(GUILD, 111, False)
+    assert store.get(GUILD).channel_rules == {111: False}
+    assert store.get(GUILD).channel_allowed(111) is False
+
+
+def test_remove_channel_rule(store):
+    store.set_channel_rule(GUILD, 111, True)
+    store.remove_channel_rule(GUILD, 111)
+    assert store.get(GUILD).channel_rules == {}
+    assert store.get(GUILD).channel_allowed(111) is True
+
+
+def test_clear_channel_rules(store):
+    store.set_channel_rule(GUILD, 111, True)
+    store.set_channel_rule(GUILD, 222, False)
+    store.clear_channel_rules(GUILD)
+    assert store.get(GUILD).channel_rules == {}
