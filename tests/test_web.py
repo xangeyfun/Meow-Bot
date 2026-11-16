@@ -25,6 +25,7 @@ def test_commands(web_client):
     response = web_client.get("/commands")
     assert response.status_code == 200
     assert b"/config" in response.data
+    assert b"/profile" in response.data
     assert b"built in triggers" in response.data
     assert b"/version" not in response.data
     assert b"hidden" in response.data
@@ -35,6 +36,17 @@ def test_theme_toggle(web_client):
     assert response.status_code == 200
     assert b"data-theme-toggle" in response.data
     assert b"js/theme.js" in response.data
+
+
+def test_open_graph_image(web_client):
+    response = web_client.get("/")
+    assert response.status_code == 200
+    assert b"/static/img/og.png" in response.data
+    assert b"/static/img/og.svg" not in response.data
+
+    image = web_client.get("/static/img/og.png")
+    assert image.status_code == 200
+    assert image.mimetype == "image/png"
 
 
 def test_screenshots(web_client):
@@ -60,6 +72,24 @@ def test_info_pages(web_client):
     for path in ["/info", "/privacy", "/terms", "/support"]:
         response = web_client.get(path)
         assert response.status_code == 200
+
+
+def test_docs_pages(web_client):
+    assert b"read docs" in web_client.get("/info").data
+
+    response = web_client.get("/docs")
+    assert response.status_code == 200
+    assert b"getting started" in response.data
+
+    for path in [
+        "/docs/getting-started",
+        "/docs/triggers",
+        "/docs/stats",
+        "/docs/troubleshooting",
+    ]:
+        response = web_client.get(path)
+        assert response.status_code == 200
+        assert b"docs" in response.data
 
 
 def test_invite_redirect(web_client):
