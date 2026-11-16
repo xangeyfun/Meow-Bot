@@ -5,7 +5,7 @@
 <section class="page-head">
   <p class="eyebrow">status</p>
   <h1><span class="status-dot {% if stats.online %}online{% endif %}"></span>{% if stats.online %}online{% else %}offline{% endif %}</h1>
-  <p class="lede">{% if stats.online %}meow bot is connected and meowing.{% else %}meow bot is not responding right now. it may be restarting.{% endif %}</p>
+  <p class="lede">{% if stats.online %}meow bot is connected and meowing. the purr engine is warm.{% else %}meow bot is not responding right now. it may be restarting or taking a very serious nap.{% endif %}</p>
 </section>
 
 <section class="status-panel">
@@ -22,8 +22,8 @@
     <p>uptime is measured from the last time the bot started, and is only shown while it is online.</p>
   </div>
   <div>
-    <h2>bot acting up?</h2>
-    <p>try a quick restart or check the issue tracker. if something looks broken, a report helps a lot.</p>
+    <h2>cat acting up?</h2>
+    <p>try a quick restart or check the issue tracker. if something looks broken, a report helps a lot. the cat cannot fix bugs by sitting on them.</p>
     <div class="actions">
       <a class="button" href="{{ github_issues_url }}">open an issue</a>
       <a class="button" href="{{ url_for('support_page') }}">get support</a>
