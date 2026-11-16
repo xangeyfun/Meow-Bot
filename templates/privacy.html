@@ -4,16 +4,16 @@
 {% block content %}
 <section class="page-head">
   <p class="eyebrow">privacy</p>
-  <h1>what it stores</h1>
-  <p class="lede">the short version: ids and counts, not message content.</p>
+  <h1>what the cat remembers</h1>
+  <p class="lede">the short version: ids and counts, not message content. the cat has a small notebook.</p>
 </section>
 
 <section class="prose">
   <h2>what meow bot stores</h2>
   <ul>
-    <li>server ids and user ids, so it can count meows per server and per user.</li>
+    <li>server ids, user ids, and channel ids, so it can count meows and respect channel filters.</li>
     <li>meow counts and the time of the last meow.</li>
-    <li>server settings, including custom triggers (their patterns and replies) and which triggers are on or off.</li>
+    <li>server settings, including custom triggers (their patterns and replies), channel filters, and which triggers are on or off.</li>
     <li>a heartbeat timestamp and basic bot totals for the status page.</li>
   </ul>
 
@@ -25,10 +25,10 @@
   </ul>
 
   <h2>who can see it</h2>
-  <p>anyone can see server stats with the bot commands. server admins can see and change server settings. the website shows only aggregate totals. the database is not public.</p>
+  <p>anyone can see server stats with the bot commands. server admins can see and change server settings. the website shows only aggregate totals. the database is not public. the cat does not share its notebook.</p>
 
   <h2>removing data</h2>
-  <p>server admins can turn the bot off or remove custom triggers at any time. to request deletion of a server's stats, use the support page.</p>
+  <p>server admins can turn the bot off, remove custom triggers, or clear channel filters at any time. to request deletion of a server's stats, use the support page.</p>
 
   <p class="muted">last updated: {{ current_year }}.</p>
 </section>
