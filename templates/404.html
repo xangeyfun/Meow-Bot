@@ -2,10 +2,15 @@
 {% block title %}not found | {{ bot_name }}{% endblock %}
 {% block description %}this page does not exist.{% endblock %}
 {% block content %}
-<section class="page-head">
+<section class="page-head lost-page">
   <p class="eyebrow">404</p>
-  <h1>no meows here</h1>
-  <p class="lede">this page went looking for meows and got lost.</p>
+  <h1>no meows here <span class="title-glyph" aria-hidden="true">:3</span></h1>
+  <p class="lede">this page went looking for meows and got lost. the cat is now sitting in an empty room.</p>
+  <div class="lost-cat" aria-hidden="true">
+    <span class="lost-cat-body">ᓚᘏᗢ</span>
+    <span class="lost-cat-yarn"></span>
+    <span class="lost-cat-question">?</span>
+  </div>
   <a class="button primary" href="{{ url_for('index') }}">back home</a>
 </section>
 {% endblock %}
