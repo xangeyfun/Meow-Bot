@@ -45,6 +45,17 @@ class GuildConfig:
     enabled: bool
     builtin_enabled: dict[str, bool]
     custom_triggers: list[CustomTrigger] = field(default_factory=list)
+    channel_rules: dict[int, bool] = field(default_factory=dict)
+
+    def channel_allowed(self, channel_id):
+        allowlist = {
+            rule_channel_id
+            for rule_channel_id, allowed in self.channel_rules.items()
+            if allowed
+        }
+        if allowlist and channel_id not in allowlist:
+            return False
+        return self.channel_rules.get(channel_id, True)
 
 
 class GuildConfigStore:
@@ -108,6 +119,14 @@ class GuildConfigStore:
                         simple_text=item["simple_text"],
                     )
                 )
+
+            channel_rules = {
+                item["channel_id"]: bool(item["allowed"])
+                for item in conn.execute(
+                    "SELECT channel_id, allowed FROM channel_rules WHERE guild_id = ?",
+                    (guild_id,),
+                )
+            }
         finally:
             conn.close()
 
@@ -116,6 +135,7 @@ class GuildConfigStore:
             enabled=enabled,
             builtin_enabled=builtin_enabled,
             custom_triggers=custom_triggers,
+            channel_rules=channel_rules,
         )
         self._cache[guild_id] = config
         return config
@@ -158,6 +178,43 @@ class GuildConfigStore:
                 )
             else:
                 raise ValueError(f"unknown trigger kind: {kind}")
+            conn.commit()
+        finally:
+            conn.close()
+        self.invalidate(guild_id)
+
+    def set_channel_rule(self, guild_id, channel_id, allowed):
+        conn = self._connect()
+        try:
+            self._ensure_guild(conn, guild_id)
+            conn.execute(
+                "INSERT INTO channel_rules (guild_id, channel_id, allowed) VALUES (?, ?, ?) "
+                "ON CONFLICT(guild_id, channel_id) DO UPDATE SET allowed = excluded.allowed",
+                (guild_id, channel_id, int(allowed)),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        self.invalidate(guild_id)
+
+    def remove_channel_rule(self, guild_id, channel_id):
+        conn = self._connect()
+        try:
+            conn.execute(
+                "DELETE FROM channel_rules WHERE guild_id = ? AND channel_id = ?",
+                (guild_id, channel_id),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        self.invalidate(guild_id)
+
+    def clear_channel_rules(self, guild_id):
+        conn = self._connect()
+        try:
+            conn.execute(
+                "DELETE FROM channel_rules WHERE guild_id = ?", (guild_id,)
+            )
             conn.commit()
         finally:
             conn.close()
