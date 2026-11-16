@@ -10,17 +10,29 @@
   <meta property="og:description" content="{% block og_description %}a discord bot that says meow.{% endblock %}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ site_url }}{{ request.path }}">
-  <meta property="og:image" content="{{ site_url }}/static/img/og.svg">
-  <meta name="theme-color" content="#E85D2A">
+  <meta property="og:image" content="{{ site_url }}/static/img/og.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="meow bot profile picture with the text say meow, receive meow.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ site_url }}/static/img/og.png">
+  <meta name="theme-color" content="#E8682F">
   <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='img/pfp.jpg') }}">
   <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body data-page="{{ page }}">
+  <div class="cursor-trail" data-cursor-trail aria-hidden="true"></div>
+
   <header class="site-header">
     <a class="brand" href="{{ url_for('index') }}" aria-label="{{ bot_name }} home">
-      <img src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="" width="32" height="32">
-      <span>{{ bot_name }}</span>
+      <span class="brand-mark">
+        <img src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="" width="32" height="32">
+        <span class="brand-ear brand-ear-left" aria-hidden="true"></span>
+        <span class="brand-ear brand-ear-right" aria-hidden="true"></span>
+      </span>
+      <span class="brand-name">{{ bot_name }}</span>
     </a>
     <nav class="site-nav" aria-label="main">
       <a href="{{ url_for('commands_page') }}" {% if page == 'commands' %}aria-current="page"{% endif %}>commands</a>
@@ -49,7 +61,12 @@
       <img src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="" width="22" height="22">
       <span>{{ bot_name }}</span>
     </div>
+    <div class="footer-cat" aria-hidden="true">
+      <span class="footer-cat-glyph">ᓚᘏᗢ</span>
+      <span class="footer-zzz"><span>z</span><span>z</span><span>z</span></span>
+    </div>
     <nav class="footer-nav" aria-label="footer">
+      <a href="{{ url_for('docs_page') }}">docs</a>
       <a href="{{ url_for('privacy_page') }}">privacy</a>
       <a href="{{ url_for('terms_page') }}">terms</a>
       <a href="{{ url_for('support_page') }}">support</a>
