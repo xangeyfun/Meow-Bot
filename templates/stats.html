@@ -4,14 +4,14 @@
 {% block content %}
 <section class="page-head">
   <p class="eyebrow">stats</p>
-  <h1>the meow count</h1>
-  <p class="lede">every reply is a point. here is how the scoreboard looks right now.</p>
+  <h1>the great meow tally</h1>
+  <p class="lede">every reply is a point. here is how the scoreboard looks right now. the cat keeps excellent records.</p>
 </section>
 
 <section class="stat-grid">
-  <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_meows) }}</span><span class="stat-label">total meows</span></div>
-  <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_guilds) }}</span><span class="stat-label">servers</span></div>
-  <div class="stat-card"><span class="stat-number">{{ "{:,}".format(stats.total_users) }}</span><span class="stat-label">meowers</span></div>
+  <div class="stat-card"><span class="stat-number" data-stat="total_meows">{{ "{:,}".format(stats.total_meows) }}</span><span class="stat-label">total meows</span></div>
+  <div class="stat-card"><span class="stat-number" data-stat="total_guilds">{{ "{:,}".format(stats.total_guilds) }}</span><span class="stat-label">servers</span></div>
+  <div class="stat-card"><span class="stat-number" data-stat="total_users">{{ "{:,}".format(stats.total_users) }}</span><span class="stat-label">meowers</span></div>
   <div class="stat-card"><span class="stat-number">{{ "{:,.1f}".format(stats.meows_per_user) }}</span><span class="stat-label">meows per meower</span></div>
 </section>
 
@@ -24,9 +24,9 @@
     </div>
   </div>
   <div class="note-card">
-    <h3>how counting works</h3>
+    <h3>how the counting works</h3>
     <p>the bot counts a meow when it successfully replies. messages dropped by the rate limit are not counted.</p>
-    <p>only totals are shown here. server and user ids stay in the database.</p>
+    <p>only totals are shown here. server and user ids stay in the database. the cat cannot be bribed for details.</p>
   </div>
 </section>
 {% endblock %}
