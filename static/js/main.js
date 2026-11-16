@@ -71,10 +71,22 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const bumpNumber = (node) => {
-    node.classList.remove("bump");
+    const cell = node.parentElement;
+    node.classList.remove("purr");
+    if (cell) {
+      cell.classList.remove("paw-pop");
+    }
     void node.offsetWidth;
-    node.classList.add("bump");
-    window.setTimeout(() => node.classList.remove("bump"), 470);
+    node.classList.add("purr");
+    if (cell) {
+      cell.classList.add("paw-pop");
+    }
+    window.setTimeout(() => {
+      node.classList.remove("purr");
+      if (cell) {
+        cell.classList.remove("paw-pop");
+      }
+    }, 780);
   };
 
   const animateNumber = (node, target, duration = 780) => {
@@ -84,11 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const integerTarget = Number.isInteger(target);
     const started = performance.now();
     const step = (now) => {
       const progress = Math.min(1, (now - started) / duration);
       const eased = 1 - Math.pow(1 - progress, 3);
-      node.textContent = formatValue(from + (target - from) * eased);
+      const value = from + (target - from) * eased;
+      node.textContent = formatValue(integerTarget ? Math.round(value) : value);
       if (progress < 1) {
         requestAnimationFrame(step);
       } else {
@@ -244,6 +258,33 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     });
+  });
+
+  const backToTop = document.querySelector("[data-back-to-top]");
+
+  if (backToTop) {
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: reducedMotion ? "auto" : "smooth",
+      });
+    });
+  }
+
+  document.querySelectorAll(".docs-nav").forEach((nav) => {
+    const active = nav.querySelector('[aria-current="page"]');
+    if (!active || nav.scrollWidth <= nav.clientWidth) {
+      return;
+    }
+
+    const navRect = nav.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const target =
+      nav.scrollLeft +
+      activeRect.left -
+      navRect.left -
+      (navRect.width - activeRect.width) / 2;
+    nav.scrollTo({ left: Math.max(0, target), behavior: "auto" });
   });
 
   const revealTargets = document.querySelectorAll(
