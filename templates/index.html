@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block title %}{{ bot_name }} | a discord bot that says meow{% endblock %}
-{% block description %}meow bot watches chat for meows and meows back. it also keeps score.{% endblock %}
+{% block description %}meow bot listens for meows and meows back. it also keeps score.{% endblock %}
 {% block og_title %}{{ bot_name }} | a discord bot that says meow{% endblock %}
-{% block og_description %}meow bot watches chat for meows and meows back. it also keeps score.{% endblock %}
+{% block og_description %}meow bot listens for meows and meows back. it also keeps score.{% endblock %}
 {% block content %}
 <section class="hero">
   <div class="hero-copy">
-    <h1>it says meow.</h1>
-    <p class="lede">meow bot watches chat for meows, mreows, mews, and other cat noises. when it sees one, it meows back. that is the whole idea.</p>
+    <h1>it says meow. <span class="title-glyph" aria-hidden="true">:3</span></h1>
+    <p class="lede">meow bot listens for meows, mreows, mews, mrrps, and other cat noises. when it hears one, it meows back and adds a tally. that is the whole idea.</p>
     <div class="actions">
       <a class="button primary" href="{{ invite_url }}">add meow bot</a>
       <button class="button" type="button" data-copy="{{ invite_url }}">copy invite link</button>
@@ -17,8 +17,14 @@
   </div>
   <div class="hero-art">
     <span class="stamp">certified meower</span>
+    <svg class="hero-tail" viewBox="0 0 100 160" aria-hidden="true" focusable="false">
+      <path d="M 87.3 143.1 C 82.9 142.6 68.7 142.7 61.2 140.1 C 53.6 137.5 45.9 132.1 42.1 127.6 C 38.3 123.1 37.2 118.8 38.4 113.3 C 39.6 107.7 46.5 101.5 49.3 94.3 C 52.1 87.0 56.0 78.0 55.0 69.6 C 54.0 61.2 48.0 50.6 43.4 43.8 C 38.7 37.1 28.8 34.4 26.9 29.2 C 25.0 24.0 31.1 15.4 31.9 12.6 Q 31.0 9.0 28.1 11.4 C 26.9 14.6 19.7 24.7 21.1 30.8 C 22.5 37.0 32.7 41.6 36.6 48.2 C 40.6 54.8 44.7 63.5 45.0 70.4 C 45.4 77.4 41.9 83.0 38.7 89.7 C 35.5 96.5 27.1 102.9 25.6 110.7 C 24.2 118.5 25.1 128.9 29.9 136.4 C 34.8 143.9 45.7 151.8 54.8 155.9 C 64.0 160.0 79.7 160.1 84.7 160.9 Z"/>
+    </svg>
+    <span class="hero-whiskers hero-whiskers-left" aria-hidden="true"></span>
+    <span class="hero-whiskers hero-whiskers-right" aria-hidden="true"></span>
     <img data-meow-art src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="meow bot's profile picture" width="220" height="220" tabindex="0" role="button" aria-label="ask the cat to meow">
     <p class="art-note" data-meow-output aria-live="polite">meow.</p>
+    <p class="art-hint" aria-hidden="true">tap the cat for a meow</p>
   </div>
 </section>
 
@@ -29,28 +35,31 @@
 </section>
 
 <section class="section">
-  <h2>how it works</h2>
+  <h2>how the meowing works</h2>
   <ol class="steps">
-    <li><span class="step-number">1</span><div><h3>add the bot</h3><p>invite meow bot to your server. it needs permission to read messages and send messages.</p></div></li>
-    <li><span class="step-number">2</span><div><h3>say meow</h3><p>type meow, mreow, mew, mrow, mrrp, nya, or purr. the bot will notice.</p></div></li>
-    <li><span class="step-number">3</span><div><h3>receive meow</h3><p>it replies with a meow. it also counts the meow, because someone has to keep score.</p></div></li>
+    <li><span class="step-number">1</span><div><h3>bring the cat home</h3><p>invite meow bot to your server. it needs permission to read messages and send messages.</p></div></li>
+    <li><span class="step-number">2</span><div><h3>say a cat noise</h3><p>type meow, mreow, mew, mrow, mrrp, nya, or purr. the cat will notice.</p></div></li>
+    <li><span class="step-number">3</span><div><h3>get a meow back</h3><p>it replies with a meow. it also counts the meow, because someone has to keep score.</p></div></li>
   </ol>
 </section>
 
 <section class="section showcase">
-  <h2>in the wild</h2>
+  <h2>caught in the wild</h2>
+  <p class="section-note">a rare sighting of the meow bot in its natural habitat. the cat is very fast.</p>
   <figure class="shot-card">
     <div class="shot-frame">
       <img class="shot-light" src="{{ url_for('static', filename='img/screenshot-light.png') }}" alt="meow bot replying to a meow in Discord light mode" loading="lazy">
       <img class="shot-dark" src="{{ url_for('static', filename='img/screenshot-dark.png') }}" alt="meow bot replying to a meow in Discord dark mode" loading="lazy">
+      <span class="shot-tag" aria-hidden="true">live meow</span>
     </div>
   </figure>
 </section>
 
 <section class="section split">
   <div>
-    <h2>teach it new sounds</h2>
+    <h2>teach an old cat new sounds</h2>
     <p>server admins can add custom triggers with <code>/config</code>. pick a word or phrase in simple mode, or a regex in advanced mode, and give each trigger its own reply. patterns are tested before they are saved.</p>
+    <p class="muted">the cat is a fast learner. the cat is also picky about regex.</p>
   </div>
   <div class="note-card">
     <h3>good to know</h3>
@@ -58,13 +67,14 @@
       <li>meow and woof are built in. woof is off by default.</li>
       <li>replies are limited to 5 per 5 seconds per channel.</li>
       <li>the bot does not store message content.</li>
+      <li>admins can allow or deny channels with <code>/config</code>.</li>
     </ul>
   </div>
 </section>
 
 <section class="section cta">
-  <h2>ready?</h2>
-  <p>add meow bot to your server and let the meowing begin.</p>
+  <h2>ready to meow?</h2>
+  <p>add meow bot to your server and let the meowing begin. the cat is waiting by the door.</p>
   <a class="button primary" href="{{ invite_url }}">add to discord</a>
 </section>
 {% endblock %}
