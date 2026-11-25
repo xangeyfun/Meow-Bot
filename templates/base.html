@@ -38,6 +38,7 @@
       <div class="site-links">
         <a href="{{ url_for('commands_page') }}" {% if page == 'commands' %}aria-current="page"{% endif %}>commands</a>
         <a href="{{ url_for('stats_page') }}" {% if page == 'stats' %}aria-current="page"{% endif %}>stats</a>
+        <a href="{{ url_for('vote_page') }}" {% if page == 'vote' %}aria-current="page"{% endif %}>vote</a>
         <a href="{{ url_for('status_page') }}" {% if page == 'status' %}aria-current="page"{% endif %}>status</a>
         <a href="{{ url_for('info_page') }}" {% if page == 'info' %}aria-current="page"{% endif %}>info</a>
       </div>
