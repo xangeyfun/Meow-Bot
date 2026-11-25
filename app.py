@@ -11,6 +11,7 @@ from flask import Flask, jsonify, redirect, render_template, url_for
 import stats
 from logconf import setup_logging
 from matcher import BUILTIN_TRIGGERS
+from vote import VOTE_LINKS
 
 load_dotenv()
 setup_logging()
@@ -37,6 +38,7 @@ COMMANDS = (
     ("/profile [user]", "cross-server meow profile", "everyone"),
     ("/totalmeows", "global meows and totals", "everyone"),
     ("/github", "get the source link", "everyone"),
+    ("/vote", "vote for meow bot", "everyone"),
     ("/config", "open server settings", "manage server"),
 )
 
@@ -143,6 +145,7 @@ def inject_site():
         "support_url": SUPPORT_URL,
         "site_url": SITE_URL,
         "invite_url": INVITE_URL,
+        "vote_links": VOTE_LINKS,
         "docs": DOCS,
         "current_year": datetime.now(timezone.utc).year,
     }
@@ -223,6 +226,11 @@ def terms_page():
 @app.get("/support")
 def support_page():
     return render_template("support.html", page="support")
+
+
+@app.get("/vote")
+def vote_page():
+    return render_template("vote.html", page="vote")
 
 
 @app.get("/docs")
