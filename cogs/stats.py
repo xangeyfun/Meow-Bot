@@ -5,6 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import stats
+from vote import VoteView
 
 HIDDEN_DESCRIPTION = "only show the reply to you"
 COLOR = discord.Color(0xF4A261)
@@ -93,6 +94,7 @@ class StatsCog(commands.Cog):
         await interaction.response.send_message(
             embed=embed,
             ephemeral=hidden,
+            view=VoteView(),
             allowed_mentions=discord.AllowedMentions.none(),
         )
 
@@ -141,6 +143,7 @@ class StatsCog(commands.Cog):
         await interaction.response.send_message(
             embed=embed,
             ephemeral=hidden,
+            view=VoteView(),
             allowed_mentions=discord.AllowedMentions.none(),
         )
 
@@ -163,6 +166,7 @@ class StatsCog(commands.Cog):
         await interaction.response.send_message(
             embed=embed,
             ephemeral=hidden,
+            view=VoteView(),
             allowed_mentions=discord.AllowedMentions.none(),
         )
 
@@ -212,6 +216,7 @@ class StatsCog(commands.Cog):
         await interaction.response.send_message(
             embed=embed,
             ephemeral=hidden,
+            view=VoteView(),
             allowed_mentions=discord.AllowedMentions.none(),
         )
 
