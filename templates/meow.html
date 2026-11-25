@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}shh | {{ bot_name }}{% endblock %}
+{% block description %}a secret page for the cat.{% endblock %}
+{% block og_title %}shh | {{ bot_name }}{% endblock %}
+{% block og_description %}you found the cat.{% endblock %}
+{% block head_extra %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">secret</p>
+    <h1>you found the cat. <span class="title-glyph" aria-hidden="true">:3</span></h1>
+    <p class="lede">this page is not in the nav. the cat approves. ask it something.</p>
+    <div class="actions">
+      <button class="button primary" type="button" data-meow>ask the cat</button>
+      <a class="button" href="{{ url_for('index') }}">go back</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <span class="stamp">top secret</span>
+    <span class="hero-whiskers hero-whiskers-left" aria-hidden="true"></span>
+    <span class="hero-whiskers hero-whiskers-right" aria-hidden="true"></span>
+    <img data-meow-art src="{{ url_for('static', filename='img/pfp.jpg') }}" alt="meow bot's profile picture" width="220" height="220" tabindex="0" role="button" aria-label="ask the cat to meow">
+    <p class="art-note" data-meow-output aria-live="polite">meow.</p>
+    <p class="art-hint" aria-hidden="true">tap the cat for a meow</p>
+  </div>
+</section>
+{% endblock %}
