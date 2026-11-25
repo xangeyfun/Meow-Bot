@@ -94,6 +94,17 @@ def test_vote_page(web_client):
     assert b"vote on discordlist.gg" in response.data
 
 
+def test_meow_page(web_client):
+    response = web_client.get("/meow")
+    assert response.status_code == 200
+    assert b'name="robots" content="noindex, nofollow"' in response.data
+    assert b"you found the cat." in response.data
+    assert b"data-meow" in response.data
+    assert b"data-meow-art" in response.data
+    assert b"data-meow-output" in response.data
+    assert b'href="/meow"' not in web_client.get("/").data
+
+
 def test_docs_pages(web_client):
     assert b"read docs" in web_client.get("/info").data
 
