@@ -36,6 +36,7 @@ def test_commands(web_client):
     assert response.status_code == 200
     assert b"/config" in response.data
     assert b"/profile" in response.data
+    assert b"/vote" in response.data
     assert b"built in triggers" in response.data
     assert b"/version" not in response.data
     assert b"hidden" in response.data
@@ -82,6 +83,15 @@ def test_info_pages(web_client):
     for path in ["/info", "/privacy", "/terms", "/support"]:
         response = web_client.get(path)
         assert response.status_code == 200
+
+
+def test_vote_page(web_client):
+    response = web_client.get("/vote")
+    assert response.status_code == 200
+    assert b"https://top.gg/bot/1446086806926786581/vote" in response.data
+    assert b"https://discordlist.gg/bot/1446086806926786581/vote" in response.data
+    assert b"vote on top.gg" in response.data
+    assert b"vote on discordlist.gg" in response.data
 
 
 def test_docs_pages(web_client):
