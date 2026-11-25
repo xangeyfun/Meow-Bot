@@ -72,8 +72,40 @@
   },
   {
     "type": 1,
+    "name": "profile",
+    "description": "show a user's cross-server meow profile",
+    "options": [
+      {
+        "type": 6,
+        "name": "user",
+        "description": "the user to check. defaults to you.",
+        "required": false
+      },
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
     "name": "github",
     "description": "get the source link",
+    "options": [
+      {
+        "type": 5,
+        "name": "hidden",
+        "description": "only show the reply to you",
+        "required": false
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "vote",
+    "description": "vote for meow bot",
     "options": [
       {
         "type": 5,
