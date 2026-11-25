@@ -233,6 +233,11 @@ def vote_page():
     return render_template("vote.html", page="vote")
 
 
+@app.get("/meow")
+def meow_page():
+    return render_template("meow.html", page="meow")
+
+
 @app.get("/docs")
 def docs_page():
     return render_template("docs.html", page="info", doc_slug="overview")
