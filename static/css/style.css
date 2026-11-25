@@ -1334,18 +1334,6 @@ body {
   text-decoration: none;
 }
 
-.site-nav a[aria-current="page"]::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -0.65rem;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--accent);
-  transform: translateY(-50%);
-}
-
 .theme-toggle {
   position: relative;
   overflow: hidden;
@@ -1874,10 +1862,6 @@ table tbody tr:hover {
 
   .card:hover {
     transform: translateY(-2px);
-  }
-
-  .site-nav a[aria-current="page"]::before {
-    display: none;
   }
 }
 
