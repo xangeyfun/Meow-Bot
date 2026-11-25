@@ -78,17 +78,6 @@ class EventsCog(commands.Cog):
         self._ready_done = True
 
     @commands.Cog.listener()
-    async def on_message(self, message):
-        logger.debug(
-            "message guild=%s channel=%s author=%s(%s) length=%s",
-            getattr(message.guild, "id", None),
-            getattr(message.channel, "id", None),
-            message.author,
-            message.author.id,
-            len(message.content or ""),
-        )
-
-    @commands.Cog.listener()
     async def on_interaction(self, interaction):
         user = interaction.user
         if interaction.type is discord.InteractionType.application_command:
