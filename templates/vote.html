@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}vote | {{ bot_name }}{% endblock %}
+{% block description %}help {{ bot_name }} get noticed on bot lists.{% endblock %}
+{% block og_title %}vote for {{ bot_name }}{% endblock %}
+{% block og_description %}two clicks, once every 12 hours, keeps the cat climbing.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="eyebrow">support the cat</p>
+  <h1>vote for {{ bot_name }}</h1>
+  <p class="lede">two clicks, once every 12 hours, keeps the cat climbing.</p>
+</section>
+
+<section class="section split">
+  <div>
+    <h2>pick a list</h2>
+    <p>vote on both if you want. each site tracks its own 12 hour cooldown, so you can come back later for another click.</p>
+    <div class="actions">
+      {% for name, url in vote_links %}
+      <a class="button{% if loop.first %} primary{% endif %}" href="{{ url }}" target="_blank" rel="noopener noreferrer">vote on {{ name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="note-card">
+    <h2>why vote?</h2>
+    <p>votes help other people find the cat. no account, no cost, just a click every 12 hours.</p>
+  </div>
+</section>
+{% endblock %}
