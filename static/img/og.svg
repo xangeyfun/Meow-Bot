@@ -8,10 +8,10 @@
   </defs>
   <image href="pfp.jpg" x="96" y="158" width="288" height="288" preserveAspectRatio="xMidYMid slice" clip-path="url(#pfp-clip)"/>
   <rect x="96" y="158" width="288" height="288" rx="48" fill="none" stroke="#1c1a17" stroke-width="4"/>
-  <text x="430" y="285" font-family="monospace" font-size="104" font-weight="700" fill="#1c1a17">meow bot</text>
-  <text x="434" y="355" font-family="monospace" font-size="34" fill="#6b6258">a discord bot that says meow.</text>
-  <text x="434" y="430" font-family="monospace" font-size="30" fill="#e85d2a">say meow. receive meow.</text>
-  <rect x="432" y="474" width="250" height="44" fill="#e85d2a" stroke="#1c1a17" stroke-width="3"/>
-  <text x="452" y="504" font-family="monospace" font-size="22" font-weight="700" fill="#fff8ef">certified meower</text>
+  <text x="430" y="220" font-family="monospace" font-size="104" font-weight="700" fill="#1c1a17">meow bot</text>
+  <text x="434" y="290" font-family="monospace" font-size="34" fill="#6b6258">a discord bot that says meow.</text>
+  <text x="434" y="365" font-family="monospace" font-size="30" fill="#e85d2a">say meow. receive meow.</text>
+  <rect x="432" y="409" width="250" height="44" fill="#e85d2a" stroke="#1c1a17" stroke-width="3"/>
+  <text x="452" y="439" font-family="monospace" font-size="22" font-weight="700" fill="#fff8ef">certified meower</text>
   <text x="96" y="548" font-family="monospace" font-size="24" fill="#6b6258">github.com/xangeyfun/Meow-Bot</text>
 </svg>
